@@ -8,6 +8,8 @@ let followCamera;
 let nbrJeton=20;
 let rotationOffset=180;
 let inputStates = {};
+let key;
+let faille;
 
 window.onload = startGame;
 
@@ -22,10 +24,15 @@ function startGame() {
     createPipe(50,0);
     tremplin(-150,200)
     stepByStep(5,100);
+    poutre(-200,100)
+    coffreFort(-400,0)
 
     createBoundingBox(boule);
     generateJetons();
     collision();
+
+
+    boule.key=false;
     engine.runRenderLoop(() => {
         
         //followCamera.rotationOffset+=0.5;
@@ -210,9 +217,10 @@ function generateJetons(){
     for (let i = 0; i < nbrJeton; i++) {
         let xrand = Math.floor(Math.random()*500 - 250);
         let zrand = Math.floor(Math.random()*500 - 250);
-        console.log(i)
         scene.jetons[i] = createJeton(i,xrand,1,zrand);
     }
+    key = scene.jetons[nbrJeton-1];
+    key.material.emissiveColor = new BABYLON.Color3.Red;
 }
 
 function collision(){// detecte quand la boule rentre en colision avec un jeton
@@ -222,38 +230,48 @@ function collision(){// detecte quand la boule rentre en colision avec un jeton
                 {trigger : BABYLON.ActionManager.OnIntersectionEnterTrigger,
                 parameter : jeton},
                 () => {
+                    if(jeton===key)boule.key=true
                     jeton.dispose();
                     nbrJeton-=1;
                 }
             ));
         });
+    boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+        {trigger : BABYLON.ActionManager.OnIntersectionEnterTrigger,
+            parameter : faille},
+        () => {
+            if(boule.key)faille.dispose();
+
+
+        }));
 }
 
 //############ Creation des obstacles ###################
 function stepByStep(x,z){
-    createStep(20,20,0,x+10,5,z);
-    createStep(10,10,1,x+33,10,z);
-    createStep(5,5,2,x+48,15,z);
-    createStep(10,10,3,x+63,10,z);
-    createStep(20,20,4,x+83,5,z);
-    scene.jetons[nbrJeton]=createJeton(nbrJeton,x+48,20,z);
+    createStep(20,20,x,7,z);
+    createStep(10,10,x+23,14,z);
+    createStep(5,5,x+38,21,z);
+    createStep(10,10,x+53,14,z);
+    createStep(20,20,x+73,7,z);
+    scene.jetons[nbrJeton]=createJeton(nbrJeton,x+38,24,z);
     nbrJeton-=1;
 
 }
 
-function createStep(w,s,id,x,y,z){
-    let step = new BABYLON.MeshBuilder.CreateBox("step_"+id,{size:s,width : w,height:2},scene);
+function createStep(w,s,x,y,z){
+    let step = new BABYLON.MeshBuilder.CreateBox("step_",{size:s,width : w,height:2},scene);
     step.material = new BABYLON.StandardMaterial("stepMaterial", scene);
     step.checkCollisions = true;
     step.position.x=x;
     step.position.y=y;
     step.position.z = z;
     createBoundingBox(step);
+    return step;
 
 }
 
 function createPipe(x,z){
-    const pipe = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height:40, size:50,diameterTop:1,diameterBottom:60});
+    const pipe = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height:40,diameterTop:1,diameterBottom:60});
     pipe.position.x=x;
     pipe.position.z=z;
     pipe.position.y=1;
@@ -283,6 +301,48 @@ function tremplin(x,z){
     nbrJeton-=1;
 
 }
+
+function poutre(x,z){
+    createStep(20,20,x,7,z);
+    createStep(10,10,x+23,14,z);
+
+    const poutre = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height:50,diameterTop:1,diameterBottom:1});
+    poutre.position.x = x+53;
+    poutre.position.y=14;
+    poutre.position.z=z;
+    poutre.rotation.z=1.57;
+    createBoundingBox(poutre);
+    poutre.checkCollisions=true;
+
+    scene.jetons[nbrJeton]=createJeton(nbrJeton,poutre.position.x,poutre.position.y+5,poutre.position.z);
+    nbrJeton-=1;
+
+    createStep(10,10,x+83,14,z);
+    createStep(20,20,x+103,7,z);
+}
+
+function coffreFort(x,z){
+    //TODO faire un beau coffre
+    let cote1 = createStep(20,20,x+10,10,z+10);
+    let cote2 = createStep(20,20,x-10,10,z+10);
+    let cote3 = createStep(22,20,x,10,z);
+    faille = createStep(22,20,x,10,z+20);
+
+    cote1.rotation.x=1.58;
+    cote1.rotation.z=1.58;
+
+    cote2.rotation.x=1.58;
+    cote2.rotation.z=1.58;
+
+    cote3.rotation.x=1.58;
+    faille.rotation.x=1.58;
+
+    scene.jetons[nbrJeton]= createJeton(nbrJeton,x,7,z+10);
+    nbrJeton-=1;
+
+    createStep(22,22,x,20,z+10);
+}
+
 
 
 
