@@ -31,7 +31,6 @@ function startGame() {
     generateJetons();
     collision();
 
-
     boule.key=false;
     engine.runRenderLoop(() => {
         
@@ -114,7 +113,7 @@ function createBoule() {
     bouleMaterial.emissiveColor = new BABYLON.Color3.Black;
     boule.material = bouleMaterial;
     boule.position.y = 3.5;
-    boule.speed = 1;
+    boule.speed = 5;
     boule.frontVector = new BABYLON.Vector3(0, 0, 1);
 
     boule.move = () => { //TODO bien detecter les colisions car la ce n'est pas assez precis
@@ -341,6 +340,25 @@ function coffreFort(x,z){
     nbrJeton-=1;
 
     createStep(22,22,x,20,z+10);
+
+    var plane = BABYLON.Mesh.CreatePlane("plane",10,scene);
+    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
+    plane.parent = faille;
+    plane.position.y = -10;
+    plane.rotation.x=1.58;
+    plane.rotation.y=3.150;
+    plane.position.z=-20;
+    var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Find \nthe key");
+    button1.width = 20;
+    button1.height = 20;
+    button1.color = "white";
+    button1.fontSize = 200;
+    button1.background = "green";
+    button1.onPointerUpObservable.add(function() {
+        alert("You have to find the key for open the safe");
+    });
+    advancedTexture.addControl(button1);
+
 }
 
 
