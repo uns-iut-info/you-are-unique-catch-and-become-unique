@@ -10,6 +10,7 @@ let rotationOffset=180;
 let inputStates = {};
 let key;
 let faille;
+let zMovement = 5;
 
 window.onload = startGame;
 
@@ -17,8 +18,16 @@ function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
     scene = createScene();
-    scene.jetons=[];
+    scene.enablePhysics();
     modifySettings();
+
+    boule = createBoule();
+    followCamera = createFollowCamera( boule);
+
+    scene.activeCamera = followCamera;
+
+    scene.jetons=[];
+
 
     //generation des obstacles
     createPipe(50,0);
@@ -49,17 +58,17 @@ function startGame() {
 
 function createScene() {
     let scene = new BABYLON.Scene(engine);
-    ground = createGround(0);
-    ground2 = createGround(200);
+    scene.enablePhysics();
+    ground = createGround(0,scene);
+    ground2 = createGround(200,scene);
     let freeCamera = createFreeCamera();
-    boule = createBoule();
-    followCamera = createFollowCamera( boule);
-    scene.activeCamera = followCamera;
+
+
     createLights();
    return scene;
 }
 
-function createGround(y) {
+function createGround(y,scene) {
     const groundOptions = { width:2000, height:2000, subdivisions:20, minHeight:0, maxHeight:100, onReady: onGroundCreated};
     const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", 'images/hmap1.png', groundOptions, scene); 
     function onGroundCreated() {
@@ -68,6 +77,8 @@ function createGround(y) {
         ground.material = groundMaterial;
         ground.position.y=y;
         ground.checkCollisions = true;
+        ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground,
+            BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0,restitution: 1 }, scene);
     }
     return ground;
 }
@@ -79,7 +90,7 @@ function createLights() {
 
 function createFreeCamera() {
     let camera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(0, 50, 0), scene);
-    camera.attachControl(canvas);
+    camera.attachControl(canvas,false);
     camera.checkCollisions = true; 
     camera.applyGravity = true;
 
@@ -105,17 +116,32 @@ function createFollowCamera(target) {
     return camera;
 }
 
-let zMovement = 5;
+
 function createBoule() {
     boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter : 7}, scene);
     let bouleMaterial = new BABYLON.StandardMaterial("bouleMaterial", scene);
     bouleMaterial.diffuseColor = new BABYLON.Color3.White;
     bouleMaterial.emissiveColor = new BABYLON.Color3.Black;
+    bouleMaterial.diffuseTexture = new BABYLON.Texture("images/hmap2.jpg", scene)
+
     boule.material = bouleMaterial;
+
+    boule.applyGravity=true;
     boule.position.y = 3.5;
+    boule.position.z=-10;
+    boule.position.x=-30
     boule.speed = 5;
     boule.frontVector = new BABYLON.Vector3(0, 0, 1);
+    boule.applyGravity=true;
 
+    boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 1 }, scene);
+
+
+
+
+
+
+    boule.actionManager = new BABYLON.ActionManager(scene);
     boule.move = () => { //TODO bien detecter les colisions car la ce n'est pas assez precis
         let yMovement = 0;
 
@@ -131,13 +157,18 @@ function createBoule() {
         }
         if(inputStates.left) {
             boule.rotation.y -= 0.02;
+            boule.rotate(BABYLON.Axis.Y, -0.02);
             boule.frontVector = new BABYLON.Vector3(Math.sin(boule.rotation.y), 0, Math.cos(boule.rotation.y));
+
         }
         if(inputStates.right) {
             boule.rotation.y += 0.02;
+            boule.rotate(BABYLON.Axis.Y, 0.02);
             boule.frontVector = new BABYLON.Vector3(Math.sin(boule.rotation.y), 0, Math.cos(boule.rotation.y));
+
         }
         if(inputStates.space){
+            boule.pulse();
         }
 
     }
