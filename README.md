@@ -20,6 +20,7 @@ Rendu 29/03/2022
 - la boule sautera en continue la touche espace ne servira donc plus a sauter mais a rouler ( nous devons approfondir la physique pour avoir un rebond parfaitement symétrique.
 - créer plusieurs niveau, plusieurs obstacles, plusieurs enigmes
 - introduire de nouveaux sons ( a chaque niveau un nouveau son, introduire des dialogues pour les enygmes)
+- créer plus de relief ( skybox dynamique, plus de textures, plus de mesh,...) 
 - crée un Mesh 3D personalisé avec une ou plusieures animations ( ce dernier point est vraiment un defit pour nous car nous n'avons jamais manipulé de logiciels d'animations 3D. 
 
 
