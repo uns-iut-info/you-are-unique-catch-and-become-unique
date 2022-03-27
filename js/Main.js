@@ -13,14 +13,14 @@ export default class Main {
         this.scene = scene;
         this.ground = ground;
         this.faille = faille;
-        this.nbrJeton = 11;
-        this.nbrJetonToGenerate = 11;
+        this.nbrJeton = 5;
+        this.nbrJetonToGenerate = 5;
         this.respawn = respawnPoint;
-        this.createStep(10, 10, respawnPoint.x, respawnPoint.y - 5, respawnPoint.z)
+        this.createStep(10, 10, respawnPoint.x, respawnPoint.y - 5, respawnPoint.z,false)
 
     }
 
-    createStep(w, s, x, y, z) {
+    createStep(w, s, x, y, z,sound) {
         let step = new BABYLON.MeshBuilder.CreateBox("step_", {size: s, width: w, height: 2}, this.scene);
         step.physicsImpostor = new BABYLON.PhysicsImpostor(step, BABYLON.PhysicsImpostor.BoxImpostor, {
             mass: 0,
@@ -30,8 +30,11 @@ export default class Main {
         step.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg");
         step.checkCollisions = true;
         step.position = new BABYLON.Vector3(x, y, z);
-        this.allStep[this.ind]=step;
-        this.ind+=1;
+        if (sound){
+            this.allStep[this.ind]=step;
+            this.ind+=1;
+        }
+
         return step;
     }
 
@@ -157,7 +160,7 @@ export default class Main {
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
-                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                    trigger: BABYLON.ActionManager.OnIntersectionExitTrigger,
                     parameter: jeton
                 },
                 () => {
@@ -165,8 +168,13 @@ export default class Main {
                         this.boule.key = true;
                         this.key.particles.stop();
                     }
-                    jeton.dispose();
-                    this.nbrJeton -= 1;
+                    let indice= this.scene.jetons.indexOf(jeton);
+                    if(indice){
+                        jeton.dispose();
+                        this.nbrJetonToGenerate -= 1;
+                        delete this.scene.jetons[indice];
+
+                    }
                 }
             ));
         });

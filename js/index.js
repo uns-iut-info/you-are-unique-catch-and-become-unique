@@ -31,30 +31,26 @@ async function startGame() {
 
 
     // Creation des obstacles
-    //main.createInvisibleHouse(-50,0);
-
     obstacle.stepByStep(40,0);
     obstacle.poutre(150,0);
-    /*main.createStep(20,20,40 ,10,0 );
-    main.createStep(5,5,70,12,0);
-    main.createStep(20,5,120,30,0);*/
     main.createStep(100,5,320,10,-10);
     main.createStep(100,100,470,10,0);
-    faille=obstacle.coffreFort(510,12,20);
+    main.faille=obstacle.coffreFort(505,12,20);
     obstacle.createKey(290,8,10);
 
 
     main.collision();
-    main.nbrJeton=11;
+    //main.nbrJeton=11;
     engine.runRenderLoop(() => {
         main.events();
         main.boule.move();
         scene.activeCamera.move();
         scene.render();
         main.key.rotation.z+=0.02;
-        if (main.nbrJeton === 10 && level2){
+        if (main.nbrJetonToGenerate === 1 && level2){
             level2=false;
             createLevel2();
+            //main.collision();
         }
     });
 }
@@ -73,7 +69,7 @@ async function createScene() {
 }
 
 function createGround(scene,x,y,z,id) {
-    ground = BABYLON.Mesh.CreateGround("ground_"+id, 1000, 200, 1, scene);
+    ground = BABYLON.Mesh.CreateGround("ground_"+id, 3000, 3000, 1, scene);
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: -1 }, scene);
     ground.material = new BABYLON.GridMaterial("groundMaterial"+id, scene);
     ground.checkCollisions = true;
@@ -120,22 +116,30 @@ function createArcCamera(scene,target){
 //Level2
 
 function createLevel2(){
-    floorIsLava();
+    floorIsLava(440,0,0);
+    main.createStep(100,100,670,45,0,true);
+    obstacle.createInvisibleHouse(670,45,0);
 }
 
-function floorIsLava(){
-    var acc=0;
+function floorIsLava(x,y,z){
+    var acc=6;
     for (let i = 0; i < 7; i++) {
-        acc+=10;
-        var pos = (i%2)===0 ? 5 : -5;
-        console.log(pos)
-        let step = main.createStep(15,15,440+acc,acc,pos);
+        acc+=6;
+        var pos = (i%2)===0 ? 7 : -7;
+        let step = main.createStep(15,15,x+(acc*3),y+acc,z+pos,false);
+        step.modifyMass = ()=>{
+            step.physicsImpostor.mass=0.1;
+
+        }
+        step.disparait = () =>{
+            step.dispose();
+        }
         main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {trigger : BABYLON.ActionManager.OnIntersectionExitTrigger,
                 parameter : step},
             () => {
-                step.dispose();
-
+                setTimeout(step.modifyMass, 3000);
+                setTimeout(step.disparait, 5000);
             }));
     }
 

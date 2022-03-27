@@ -1,32 +1,44 @@
 export default class Obstacles {
     scene;
     main;
+
     constructor(main) {
         this.main = main;
-        this.nbrJeton=main.nbrJeton;
+        this.nbrJeton = main.nbrJeton;
         this.scene = main.scene;
 
 
     }
 
+    generateAllObstacles() {
+        this.stepByStep(40, 0);
+        this.poutre(150, 0);
+        this.main.createStep(100, 5, 320, 10, -10);
+        this.main.createStep(100, 100, 470, 10, 0);
+        this.main.faille = this.coffreFort(510, 12, 20);
+        this.createKey(290, 8, 10);
+        return this.main.faille;
+    }
+
 
     stepByStep(x, z) {
-        this.main.createStep(20, 20, x, 7, z);
-        this.main.createStep(10, 10, x + 23, 14, z);
-        this.main.createStep(5, 5, x + 38, 21, z);
-        this.main.createStep(10, 10, x + 53, 14, z);
-        this.main.createStep(20, 20, x + 73, 7, z);
-        this.main.createJeton(this.nbrJeton, x + 38, 24, z);
+        this.main.createStep(20, 20, x, 7, z, true);
+        this.main.createStep(10, 10, x + 23, 14, z, true);
+        this.main.createStep(5, 5, x + 38, 21, z, true);
+        this.main.createStep(10, 10, x + 53, 14, z, true);
+        this.main.createStep(20, 20, x + 73, 7, z, true);
+        this.main.createJeton(this.nbrJeton, x + 38, 24, z, true);
         this.nbrJeton -= 1;
-        return this.nbrJeton;
+
 
     }
+
     poutre(x, z) {
 
-        this.main.createStep(20, 20, x, 7, z);
-        this.main.createStep(10, 10, x + 23, 14, z);
-        this.main.createStep(10, 10, x + 83, 14, z);
-        this.main.createStep(20, 20, x + 103, 7, z);
+        this.main.createStep(20, 20, x, 7, z, true);
+        this.main.createStep(10, 10, x + 23, 14, z, true);
+        this.main.createStep(10, 10, x + 83, 14, z, true);
+        this.main.createStep(20, 20, x + 103, 7, z, true);
 
         const poutre = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 50, diameterTop: 1, diameterBottom: 1});
         poutre.physicsImpostor = new BABYLON.PhysicsImpostor(poutre, BABYLON.PhysicsImpostor.CylinderImpostor, {
@@ -38,14 +50,14 @@ export default class Obstacles {
         poutre.rotate(BABYLON.Axis.Z, 1.57);
         poutre.checkCollisions = true;
 
-        this.scene.jetons[this.nbrJeton] = this.main.createJeton(this.nbrJeton, poutre.position.x, poutre.position.y + 5, poutre.position.z);
+        this.main.createJeton(this.nbrJeton, poutre.position.x, poutre.position.y + 5, poutre.position.z);
         this.nbrJeton -= 1;
-        return this.nbrJeton;
+
 
     }
 
-    createKey(x,y,z) {
-        let cercle = new BABYLON.MeshBuilder.CreateTorus("torus", {thickness: 0.55, diameter: 3},this.scene);
+    createKey(x, y, z) {
+        let cercle = new BABYLON.MeshBuilder.CreateTorus("torus", {thickness: 0.55, diameter: 3}, this.scene);
         let barre = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {
             height: 5,
             diameterTop: 0.5,
@@ -62,10 +74,10 @@ export default class Obstacles {
             diameterBottom: 0.3
         });
 
-        cercle.material = new BABYLON.StandardMaterial("cercle",  this.scene);
-        barre.material = new BABYLON.StandardMaterial("barre",  this.scene);
-        trait1.material = new BABYLON.StandardMaterial("trait1",  this.scene);
-        trait2.material = new BABYLON.StandardMaterial("trait2",  this.scene);
+        cercle.material = new BABYLON.StandardMaterial("cercle", this.scene);
+        barre.material = new BABYLON.StandardMaterial("barre", this.scene);
+        trait1.material = new BABYLON.StandardMaterial("trait1", this.scene);
+        trait2.material = new BABYLON.StandardMaterial("trait2", this.scene);
 
         cercle.material.emissiveColor = new BABYLON.Color3.Yellow();
         barre.material.emissiveColor = new BABYLON.Color3.Yellow();
@@ -74,15 +86,15 @@ export default class Obstacles {
 
         cercle.rotation = new BABYLON.Vector3(1.58, 1.58, 0);
         barre.rotation = new BABYLON.Vector3(0, 1.58, 1.58);
-        this.main.createStep(12, 12, x, y, z);
-        let socle = this.main.createStep(12, 12, x+40, y+6, z+20);
-        this.main.createStep(12, 12, x+100, y, z);
+        this.main.createStep(12, 12, x, y, z, true);
+        let socle = this.main.createStep(12, 12, x + 40, y + 6, z + 20, true);
+        this.main.createStep(12, 12, x + 100, y, z, true);
         cercle.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 5, socle.position.z);
         trait2.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 4.5, socle.position.z - 5.7);
         trait1.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 4.5, socle.position.z - 5);
         barre.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 5, socle.position.z - 4);
 
-        cercle.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(x+40, y+14, z+20));
+        cercle.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(x + 40, y + 14, z + 20));
         cercle.particles.minSize = 0.25;
         cercle.particles.maxSize = 0.55
 
@@ -92,26 +104,24 @@ export default class Obstacles {
         cercle.particles.start();
 
 
-
-
         cercle.addChild(barre);
         barre.addChild(trait1);
         barre.addChild(trait2);
 
-        this.scene.jetons[ this.main.nbrJeton] = cercle;
-        this.nbrJeton-=1;
-        this.main.key=cercle;
+        this.scene.jetons[this.main.nbrJeton] = cercle;
+        this.nbrJeton -= 1;
+        this.main.key = cercle;
         return cercle;
 
     }
 
-    coffreFort(x,y, z) {
+    coffreFort(x, y, z) {
         //TODO faire un beau coffre
-        let cote1 = this.main.createStep(20, 20, x + 10, y+10, z + 10);
-        this.main.faille = this.main.createStep(20, 20, x - 10, y+10, z + 10);
-        let cote2 = this.main.createStep(22, 20, x, y+10, z);
-        let cote3 = this.main.createStep(22, 20, x, y+10, z + 20);
-        let toit = this.main.createStep(22, 22, x, y+20, z + 10);
+        let cote1 = this.main.createStep(20, 20, x + 10, y + 10, z + 10, false);
+        this.main.faille = this.main.createStep(20, 20, x - 10, y + 10, z + 10, false);
+        let cote2 = this.main.createStep(22, 20, x, y + 10, z, false);
+        let cote3 = this.main.createStep(22, 20, x, y + 10, z + 20, false);
+        let toit = this.main.createStep(22, 22, x, y + 20, z + 10, false);
 
         cote1.rotate(BABYLON.Axis.Z, 1.57);
         this.main.faille.rotate(BABYLON.Axis.Z, 1.57);
@@ -128,7 +138,8 @@ export default class Obstacles {
         cote3.material.emissiveColor = new BABYLON.Color3.Gray();
         toit.material.emissiveColor = new BABYLON.Color3.Gray();
 
-        this.main.createJeton(this.nbrJeton, x, y+7, z + 10);
+        this.main.createJeton(this.nbrJeton, x, y + 7, z + 10);
+        this.nbrJeton -= 1;
 
 
         // panneau
@@ -138,12 +149,12 @@ export default class Obstacles {
     }
 
 
-    createInvisibleHouse(x, z) {
-        let cote1 = this.main.createStep(20, 20, x + 10, 10, z);
-        let coteB = this.main.createStep(10, 20, x - 10, 5, z);
-        let cote2 = this.main.createStep(22, 20, x, 10, z - 10);
-        let cote3 = this.main.createStep(22, 20, x, 10, z + 10);
-        let toit = this.main.createStep(22, 22, x, 20, z);
+    createInvisibleHouse(x, y, z) {
+        let cote1 = this.main.createStep(20, 20, x + 10, y + 10, z, false);
+        let coteB = this.main.createStep(10, 20, x - 10, y + 5, z, false);
+        let cote2 = this.main.createStep(22, 20, x, y + 10, z - 10, false);
+        let cote3 = this.main.createStep(22, 20, x, y + 10, z + 10, false);
+        let toit = this.main.createStep(22, 22, x, y + 20, z, false);
 
         cote1.rotate(BABYLON.Axis.Z, 1.57);
         coteB.rotate(BABYLON.Axis.Z, 1.57);
@@ -159,24 +170,21 @@ export default class Obstacles {
         cote2.material.alpha = 0;
         cote3.material.alpha = 0;
         toit.material.alpha = 0;
+        let jeton = this.main.createJeton(this.nbrJeton, x, y + 2, z);
+        this.nbrJeton -= 1;
+        this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+            {
+                trigger: BABYLON.ActionManager.OnIntersectionExitTrigger,
+                parameter: jeton
+            },
+            () => {
+                jeton.dispose();
+                this.nbrJetonToGenerate -= 1;
+            }
+        ));
 
-        this.scene.jetons[this.nbrJeton] = this.createJeton(this.nbrJeton, x, 2, z);
 
-
-        this.createPanneau(toit, 0, 10, 0, "Invisible\n House", "there is a breach in the house where you can pass and get the token")
+        this.main.createPanneau(toit, 0, 10, 0, "Invisible\n House", "there is a breach in the house where you can pass and get the token")
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
