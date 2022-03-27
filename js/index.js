@@ -20,8 +20,8 @@ async function startGame() {
     scene.jetons=[];
     let ground = createGround(scene,0,0,0,1);
 
-    main = new Main(scene,ground,faille);
-    obstacle = new Obstacles(main.scene,main.nbrJeton)
+    main = new Main(scene,ground,faille,{x:0,y:10,z:0});
+    obstacle = new Obstacles(main);
 
     main.modifySettings(window);
     main.createSphere(scene);
@@ -32,11 +32,14 @@ async function startGame() {
 
 
     // Creation des obstacles
-    main.createInvisibleHouse(-50,0);
-    main.nbrJeton=obstacle.stepByStep(100,0);
+    //main.createInvisibleHouse(-50,0);
+    //main.nbrJeton=obstacle.stepByStep(100,0);
 
-    main.nbrJeton=obstacle.poutre(280,0);
+    //main.nbrJeton=obstacle.poutre(280,0);
 
+    main.createStep(20,20,40 ,10,0 );
+    main.createStep(5,5,70,12,0);
+    main.createStep(20,5,120,30,0);
 
 
     faille=main.coffreFort(450,50);
@@ -45,7 +48,7 @@ async function startGame() {
     main.collision();
     main.nbrJeton=11;
     engine.runRenderLoop(() => {
-
+        main.events();
         main.boule.move();
         scene.activeCamera.move();
         scene.render();
@@ -117,8 +120,8 @@ function createFreeCamera(scene) {
 
 function createArcCamera(scene,target){
     var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 100, target, scene);
-    camera.alpha = -3.14
-    camera.beta = 3.14/3
+    camera.alpha = -3.14;
+    camera.beta = 3.14/3;
     camera.move = ()=>{
     }
     return camera;
@@ -131,7 +134,7 @@ function createLevel2(){
 }
 
 function floorIsLava(){
-    var acc=0
+    var acc=0;
     for (let i = 0; i < 7; i++) {
         acc+=20;
         var pos = (i%2)===0 ? 40 : -40;

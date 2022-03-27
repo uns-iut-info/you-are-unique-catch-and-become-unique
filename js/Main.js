@@ -8,17 +8,19 @@ export default class Main {
     inputStates = {};
 
 
-    constructor(scene,ground,faille) {
+    constructor(scene,ground,faille, respawnPoint) {
         this.scene = scene;
         this.ground=ground;
         this.faille=faille;
         this.nbrJeton=11;
+        this.respawn = respawnPoint;
+        this.createStep(10,10,respawnPoint.x,respawnPoint.y-5,respawnPoint.z)
 
     }
     createSphere(scene) {
         let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, scene);
         boule.applyGravity = true;
-        boule.position = new BABYLON.Vector3(-480, 10, -10)
+        boule.position =new BABYLON.Vector3(this.respawn.x,this.respawn.y,this.respawn.z);
         boule.checkCollisions = true;
         let speed = 2;
         boule.applyGravity = true;
@@ -39,7 +41,6 @@ export default class Main {
             if (this.inputStates.up) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
-
             }
             if (this.inputStates.down) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
@@ -136,7 +137,7 @@ export default class Main {
                 },
                 () => {
                     if (jeton === this.key) {
-                         this.boule.key = true
+                         this.boule.key = true;
                         this.key.particles.stop();
                     }
                     jeton.dispose();
@@ -274,7 +275,13 @@ export default class Main {
 
     }
 
-
+    events(){
+        if(this.boule.intersectsMesh(this.ground,true)){
+            this.boule.position = new BABYLON.Vector3(this.respawn.x,this.respawn.y,this.respawn.z);
+            this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
+            this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0,0));
+        }
+    }
 
 
     createPanneau(parent, x, y, z, message, messageOnClick) {
