@@ -23,5 +23,5 @@ Rendu 29/03/2022
 - crée un Mesh 3D personalisé avec une ou plusieures animations ( ce dernier point est vraiment un defit pour nous car nous n'avons jamais manipulé de logiciels d'animations 3D. 
 
 
-Marynowicz Michael/
+Marynowicz Michael   
 FORNER Yann
