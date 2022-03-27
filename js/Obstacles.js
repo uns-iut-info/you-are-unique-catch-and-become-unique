@@ -27,7 +27,7 @@ export default class Obstacles {
         this.main.createStep(5, 5, x + 38, 21, z, true);
         this.main.createStep(10, 10, x + 53, 14, z, true);
         this.main.createStep(20, 20, x + 73, 7, z, true);
-        this.main.createJeton(this.nbrJeton, x + 38, 24, z, true);
+        this.main.createJeton(this.nbrJeton, x + 38, 24, z);
         this.nbrJeton -= 1;
 
 

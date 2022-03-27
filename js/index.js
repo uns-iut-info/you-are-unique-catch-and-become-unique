@@ -135,7 +135,7 @@ function floorIsLava(x,y,z){
             step.dispose();
         }
         main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            {trigger : BABYLON.ActionManager.OnIntersectionExitTrigger,
+            {trigger : BABYLON.ActionManager.OnIntersectionEnterTrigger,
                 parameter : step},
             () => {
                 setTimeout(step.modifyMass, 3000);

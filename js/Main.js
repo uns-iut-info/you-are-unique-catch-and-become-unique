@@ -170,8 +170,11 @@ export default class Main {
                     }
                     let indice= this.scene.jetons.indexOf(jeton);
                     if(indice){
+                        console.log( this.nbrJetonToGenerate)
                         jeton.dispose();
+
                         this.nbrJetonToGenerate -= 1;
+                        console.log( this.nbrJetonToGenerate)
                         delete this.scene.jetons[indice];
 
                     }
