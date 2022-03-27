@@ -119,7 +119,7 @@ function createFreeCamera(scene) {
 
 
 function createArcCamera(scene,target){
-    var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 100, target, scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 60, target, scene);
     camera.alpha = -3.14;
     camera.beta = 3.14/3;
     camera.move = ()=>{

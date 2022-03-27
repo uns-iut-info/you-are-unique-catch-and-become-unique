@@ -30,34 +30,34 @@ export default class Main {
         boule.material.diffuseTexture.uScale *= 4;
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
-            mass: 20,
+            mass: 50,
             restitution: 0
         },  scene);
-
-
-
+        let canJump = true;
         boule.move = () => {
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
-            if (this.inputStates.up) {
+            if (this.inputStates.up && velocityLin.x < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
             }
-            if (this.inputStates.down) {
+            if (this.inputStates.down && velocityLin.x > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
             }
-            if (this.inputStates.left) {
+            if (this.inputStates.left && velocityLin.z < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
             }
-            if (this.inputStates.right) {
+            if (this.inputStates.right && velocityLin.z > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(-speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
             }
-            if (this.inputStates.space) {
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, (velocityLin.y + speed) % 18, velocityLin.z));
-            }
 
+            if (this.inputStates.space && canJump) {
+                canJump= false;
+                boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0,500,0),boule.getAbsolutePosition());
+                setTimeout(()=>{canJump= true;},1500)
+            }
         };
 
         this.boule=boule;
@@ -180,7 +180,6 @@ export default class Main {
         step.checkCollisions = true;
         step.position = new BABYLON.Vector3(x, y, z);
         return step;
-
     }
 
 
@@ -257,7 +256,7 @@ export default class Main {
 
         cercle.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(250, 38, 130))
         cercle.particles.minSize = 0.25;
-        cercle.particles.maxSize = 0.55
+        cercle.particles.maxSize = 0.55;
 
         cercle.particles.minLifeTime = 20;
         cercle.particles.maxLifeTime = 30;
