@@ -4,7 +4,6 @@ let canvas;
 let engine;
 let scene;
 let faille;
-let key;
 window.onload = startGame;
 let level2=true;
 let ground;
@@ -33,17 +32,17 @@ async function startGame() {
 
     // Creation des obstacles
     //main.createInvisibleHouse(-50,0);
-    //main.nbrJeton=obstacle.stepByStep(100,0);
 
-    //main.nbrJeton=obstacle.poutre(280,0);
-
-    main.createStep(20,20,40 ,10,0 );
+    obstacle.stepByStep(40,0);
+    obstacle.poutre(150,0);
+    /*main.createStep(20,20,40 ,10,0 );
     main.createStep(5,5,70,12,0);
-    main.createStep(20,5,120,30,0);
+    main.createStep(20,5,120,30,0);*/
+    main.createStep(100,5,320,10,-10);
+    main.createStep(100,100,470,10,0);
+    faille=obstacle.coffreFort(510,12,20);
+    obstacle.createKey(290,8,10);
 
-
-    faille=main.coffreFort(450,50);
-    key = main.generateJetons();
 
     main.collision();
     main.nbrJeton=11;
@@ -67,16 +66,7 @@ window.addEventListener("resize", () => {
 async function createScene() {
     let scene = new BABYLON.Scene(engine);
     scene.enablePhysics();
-
     createLights(scene);
-    /*BABYLON.SceneLoader.ImportMesh("", "3D_Dude/", "Bubble_Bass.gltf", scene,  (newMeshes, particleSystems, skeletons) => {
-        let heroDude = newMeshes[0];
-        heroDude.position = new BABYLON.Vector3(0, 0, 5);  // The original dude
-        // make it smaller
-        heroDude.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
-
-    });*/
-    //await BABYLON.SceneLoader.AppendAsync("3D_Dude/", "Bubble_Bass.gltf", scene);
     var music = new BABYLON.Sound("music_fond", "sounds/music_fond.wav", scene, null, { loop: true, autoplay: true });
 
     return scene;
@@ -93,7 +83,7 @@ function createGround(scene,x,y,z,id) {
 }
 function createLights(scene) {
     let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
-    let light1 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(1, 1, 0), scene);
+    let light1 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(1, 5, 0), scene);
 
 }
 
@@ -119,7 +109,7 @@ function createFreeCamera(scene) {
 
 
 function createArcCamera(scene,target){
-    var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 60, target, scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 80, target, scene);
     camera.alpha = -3.14;
     camera.beta = 3.14/3;
     camera.move = ()=>{
@@ -136,10 +126,10 @@ function createLevel2(){
 function floorIsLava(){
     var acc=0;
     for (let i = 0; i < 7; i++) {
-        acc+=20;
-        var pos = (i%2)===0 ? 40 : -40;
+        acc+=10;
+        var pos = (i%2)===0 ? 5 : -5;
         console.log(pos)
-        let step = main.createStep(15,15,480+acc,acc,pos);
+        let step = main.createStep(15,15,440+acc,acc,pos);
         main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {trigger : BABYLON.ActionManager.OnIntersectionExitTrigger,
                 parameter : step},
