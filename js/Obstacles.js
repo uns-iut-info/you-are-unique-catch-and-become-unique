@@ -10,16 +10,6 @@ export default class Obstacles {
 
     }
 
-    generateAllObstacles() {
-        this.stepByStep(40, 0);
-        this.poutre(150, 0);
-        this.main.createStep(100, 5, 320, 10, -10);
-        this.main.createStep(100, 100, 470, 10, 0);
-        this.main.faille = this.coffreFort(510, 12, 20);
-        this.createKey(290, 8, 10);
-        return this.main.faille;
-    }
-
 
     stepByStep(x, z) {
         this.main.createStep(20, 20, x, 7, z, true);
@@ -58,6 +48,7 @@ export default class Obstacles {
 
     createKey(x, y, z) {
         let cercle = new BABYLON.MeshBuilder.CreateTorus("torus", {thickness: 0.55, diameter: 3}, this.scene);
+
         let barre = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {
             height: 5,
             diameterTop: 0.5,
@@ -111,6 +102,10 @@ export default class Obstacles {
         this.scene.jetons[this.main.nbrJeton] = cercle;
         this.nbrJeton -= 1;
         this.main.key = cercle;
+        cercle.physicsImpostor = new BABYLON.PhysicsImpostor(cercle, BABYLON.PhysicsImpostor.SphereImpostor, {
+            mass: 0,
+            restitution: 0
+        }, this.scene);
         return cercle;
 
     }
@@ -174,12 +169,20 @@ export default class Obstacles {
         this.nbrJeton -= 1;
         this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {
-                trigger: BABYLON.ActionManager.OnIntersectionExitTrigger,
+                trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
                 parameter: jeton
             },
             () => {
-                jeton.dispose();
-                this.nbrJetonToGenerate -= 1;
+                if(jeton.physicsImpostor){
+                    jeton.physicsImpostor.dispose();
+                    jeton.dispose();
+                    this.nbrJetonToGenerate -= 1;
+                    var music = new BABYLON.Sound("Violons", "sounds/coin.wav", this.scene, null, {
+                        loop: false,
+                        autoplay: true
+                    });
+                }
+
             }
         ));
 

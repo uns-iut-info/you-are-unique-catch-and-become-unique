@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{babylon, babylon.gridMaterial, babylon.gui, babylonjs.loaders, cannon-es, pep}" />
+    <file url="PROJECT" libraries="{babylon, babylon.gridMaterial, babylon.gui, babylon.lavaMaterial, babylonjs.loaders, cannon-es, pep}" />
   </component>
 </project>

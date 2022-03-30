@@ -1,13 +1,9 @@
 export default class Main {
-
-
     boule;
-
     key;
     inputStates = {};
     allStep=[];
     ind=0;
-
 
     constructor(scene, ground, faille, respawnPoint) {
         this.scene = scene;
@@ -17,7 +13,6 @@ export default class Main {
         this.nbrJetonToGenerate = 5;
         this.respawn = respawnPoint;
         this.createStep(10, 10, respawnPoint.x, respawnPoint.y - 5, respawnPoint.z,false)
-
     }
 
     createStep(w, s, x, y, z,sound) {
@@ -27,45 +22,57 @@ export default class Main {
             restitution: 0
         }, this.scene);
         step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
+        //let stepMaterial =this.createShadow(step);
         step.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg");
+        //step.material=stepMaterial;
         step.checkCollisions = true;
         step.position = new BABYLON.Vector3(x, y, z);
         if (sound){
             this.allStep[this.ind]=step;
             this.ind+=1;
         }
+        step.receiveShadows = true;
 
         return step;
     }
 
-
-    createSphere(scene) {
-        let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, scene);
+    createSphere(light,light2) {
+        let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, this.scene);
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
         boule.checkCollisions = true;
         let speed = 2;
         boule.applyGravity = true;
-        boule.material = new BABYLON.StandardMaterial("s-mat", scene);
-        boule.material.diffuseTexture = new BABYLON.Texture("images/lightning.jpg", scene);
+        boule.material = new BABYLON.StandardMaterial("s-mat", this.scene);
+        boule.material.diffuseTexture = new BABYLON.Texture("images/lightning.jpg", this.scene);
         boule.material.emissiveColor = new BABYLON.Color3.Red;
+        boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
         boule.material.diffuseTexture.uScale *= 4;
+        var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+        shadowGenerator.addShadowCaster(boule);
+        shadowGenerator.useExponentialShadowMap = true;
+        var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light2);
+        shadowGenerator2.addShadowCaster(boule);
+        shadowGenerator2.usePoissonSampling = true;
+        shadowGenerator.getShadowMap().renderList.push(boule);
+
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
             mass: 50,
             restitution: 0
-        }, scene);
+        }, this.scene);
         let canJump = true;
         boule.move = () => {
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
             if (this.inputStates.up && velocityLin.x < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
+                this.ground.position.x=boule.position.x;
             }
             if (this.inputStates.down && velocityLin.x > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
-            }
+                this.ground.position.x=boule.position.x;          }
             if (this.inputStates.left && velocityLin.z < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
@@ -83,7 +90,6 @@ export default class Main {
                 }, 1500)
             }
         };
-
         this.boule = boule;
         return this.boule;
     }
@@ -129,10 +135,16 @@ export default class Main {
 
     createJeton(i, x, y, z) { // cree un jeton aux coordonnées (x,y,z)
         let jeton = new BABYLON.MeshBuilder.CreateSphere("jeton_" + i, {diameter: 2}, this.scene);
+        jeton.physicsImpostor = new BABYLON.PhysicsImpostor(jeton, BABYLON.PhysicsImpostor.SphereImpostor, {
+            mass: 0,
+            restitution: 0
+        }, this.scene);
         let jetonMaterial = new BABYLON.StandardMaterial("jetonMaterial", this.scene);
         jeton.position = new BABYLON.Vector3(x, y, z)
         jetonMaterial.emissiveColor = new BABYLON.Color3.Blue;
         jeton.material = jetonMaterial;
+        jeton.material.specularColor = new BABYLON.Color3(0, 0, 0);
+
         jeton.checkCollisions = true;
         this.scene.jetons[i] = jeton;
         this.nbrJeton = i - 1;
@@ -140,8 +152,19 @@ export default class Main {
 
     }
 
-    generateJetons() { //genere des jetons a des endroits aleatoire
+    createShadow(ground){
+        let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", this.scene);
 
+        mirrorMaterial.specularColor = new BABYLON.Color3.Black;
+        mirrorMaterial.reflectionTexture = new BABYLON.MirrorTexture("mirror", 1024, this.scene, true);
+        mirrorMaterial.reflectionTexture.mirrorPlane = new BABYLON.Plane(0, -0.1, 0, -0.1);
+        mirrorMaterial.reflectionTexture.level = 1; // between 0 and 1
+        ground.material = mirrorMaterial;
+        mirrorMaterial.reflectionTexture.renderList.push(this.boule);
+        return mirrorMaterial;
+    }
+
+    generateJetons() { //genere des jetons a des endroits aleatoire
         this.scene.jetons[this.nbrJeton] = this.createKey();
         this.key = this.scene.jetons[this.nbrJeton];
         let e = 11 - this.nbrJeton.valueOf();
@@ -152,7 +175,6 @@ export default class Main {
         }
         return this.key;
 
-
     }
 
     collision() {
@@ -160,7 +182,7 @@ export default class Main {
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
-                    trigger: BABYLON.ActionManager.OnIntersectionExitTrigger,
+                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
                     parameter: jeton
                 },
                 () => {
@@ -168,16 +190,17 @@ export default class Main {
                         this.boule.key = true;
                         this.key.particles.stop();
                     }
-                    let indice= this.scene.jetons.indexOf(jeton);
-                    if(indice){
-                        console.log( this.nbrJetonToGenerate)
+                    if (jeton.physicsImpostor) {
+                        jeton.physicsImpostor.dispose();
                         jeton.dispose();
 
+                        var music = new BABYLON.Sound("Violons", "sounds/coin.wav", this.scene, null, {
+                            loop: false,
+                            autoplay: true
+                        });
                         this.nbrJetonToGenerate -= 1;
-                        console.log( this.nbrJetonToGenerate)
-                        delete this.scene.jetons[indice];
-
                     }
+
                 }
             ));
         });
@@ -189,18 +212,6 @@ export default class Main {
             () => {
                 if (this.boule.key) this.faille.dispose();
 
-
-            }));
-        this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            {
-                trigger: BABYLON.ActionManager.OnIntersectionExitTrigger,
-                parameter: this.ground
-            },
-            () => {
-                var music = new BABYLON.Sound("Violons", "sounds/rebond.wav", this.scene, null, {
-                    loop: false,
-                    autoplay: true
-                });
 
             }));
 
@@ -218,9 +229,9 @@ export default class Main {
 
                 }));
         });
+
+
     }
-
-
 
     events() {
         if (this.boule.intersectsMesh(this.ground, true)) {
