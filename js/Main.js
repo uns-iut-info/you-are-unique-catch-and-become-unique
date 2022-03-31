@@ -4,7 +4,8 @@ export default class Main {
     inputStates = {};
     allStep=[];
     ind=0;
-
+    jump = true;
+    impulseDown = false;
     constructor(scene, ground, faille, respawnPoint) {
         this.scene = scene;
         this.ground = ground;
@@ -16,10 +17,11 @@ export default class Main {
     }
 
     createStep(w, s, x, y, z,sound) {
-        let step = new BABYLON.MeshBuilder.CreateBox("step_", {size: s, width: w, height: 2}, this.scene);
+        let step = new BABYLON.MeshBuilder.CreateBox("step_", {size: s, width: w, height: 2, restitution : 0}, this.scene);
         step.physicsImpostor = new BABYLON.PhysicsImpostor(step, BABYLON.PhysicsImpostor.BoxImpostor, {
             mass: 0,
-            restitution: 0
+            restitution: 0,
+            gravity : 18
         }, this.scene);
         step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
         //let stepMaterial =this.createShadow(step);
@@ -36,11 +38,25 @@ export default class Main {
         return step;
     }
 
+    castRay(myMesh){
+        var ray = new BABYLON.Ray(myMesh.position, new BABYLON.Vector3(0,-1,0), 4);
+        let hit = this.scene.pickWithRay(ray,(mesh)=>{
+            return (mesh !== myMesh);
+        })
+        if (hit.pickedMesh){
+            this.jump = true;
+            this.impulseDown = true;
+        }
+    }
     createSphere(light,light2) {
         let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, this.scene);
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
         boule.checkCollisions = true;
+        this.scene.registerBeforeRender(()=>{
+            this.castRay(boule);
+        })
+
         let speed = 2;
         boule.applyGravity = true;
         boule.material = new BABYLON.StandardMaterial("s-mat", this.scene);
@@ -61,9 +77,15 @@ export default class Main {
             mass: 50,
             restitution: 0
         }, this.scene);
-        let canJump = true;
         boule.move = () => {
+
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
+
+            if (velocityLin.y < -1  && this.impulseDown){
+                console.log("Pulse down !")
+                this.impulseDown = false;
+                //boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, -300, 0), boule.getAbsolutePosition());
+            }
             if (this.inputStates.up && velocityLin.x < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
@@ -81,13 +103,9 @@ export default class Main {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(-speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
             }
-
-            if (this.inputStates.space && canJump) {
-                canJump = false;
-                boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 500, 0), boule.getAbsolutePosition());
-                setTimeout(() => {
-                    canJump = true;
-                }, 1500)
+            if (this.inputStates.space && this.jump) {
+                this.jump = false;
+                boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 90, 0), boule.getAbsolutePosition());
             }
         };
         this.boule = boule;
