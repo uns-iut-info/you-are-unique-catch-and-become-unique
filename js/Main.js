@@ -4,6 +4,7 @@ export default class Main {
     inputStates = {};
     allStep=[];
     ind=0;
+    allObstacles=[];
     jump = true;
     impulseDown = false;
     constructor(scene, ground, faille, respawnPoint) {
@@ -13,7 +14,6 @@ export default class Main {
         this.nbrJeton = 5;
         this.nbrJetonToGenerate = 5;
         this.respawn = respawnPoint;
-        this.createStep(10, 10, respawnPoint.x, respawnPoint.y - 5, respawnPoint.z,false)
     }
 
     createStep(w, s, x, y, z,sound) {
@@ -34,6 +34,8 @@ export default class Main {
             this.ind+=1;
         }
         step.receiveShadows = true;
+        this.allObstacles[this.ind++]=step;
+
 
         return step;
     }
@@ -166,6 +168,7 @@ export default class Main {
         jeton.checkCollisions = true;
         this.scene.jetons[i] = jeton;
         this.nbrJeton = i - 1;
+        this.allObstacles[this.ind++]=jeton;
         return jeton;
 
     }
@@ -277,7 +280,7 @@ export default class Main {
             alert(messageOnClick);
         });
         advancedTexture.addControl(button1);
-
+        this.allObstacles[this.ind++]=button1;
         return button1;
     }
 

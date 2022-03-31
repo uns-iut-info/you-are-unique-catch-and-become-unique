@@ -2,12 +2,52 @@ export default class Obstacles {
     scene;
     main;
 
+
     constructor(main) {
         this.main = main;
         this.nbrJeton = main.nbrJeton;
         this.scene = main.scene;
 
 
+    }
+
+    createLevel1() {
+        this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false)
+        this.stepByStep(40, 0);
+        this.poutre(150, 0);
+        this.main.createStep(100, 5, 320, 10, -10);
+        this.main.createStep(100, 100, 470, 10, 0);
+        this.main.faille = this.coffreFort(505, 12, 20);
+        this.createKey(290, 8, 10);
+    }
+
+    deleteLevel1() {
+        this.main.allObstacles.forEach(obstacle => {
+            if (obstacle.physicsImpostor) {
+                obstacle.physicsImpostor.dispose();
+            }
+            obstacle.dispose();
+        });
+        for (let i = 0; i < this.scene.jetons.length; i++) {
+            delete this.scene.jetons[i];
+        }
+        this.main.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
+        this.main.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
+        this.main.nbrJeton = 5;
+        this.main.nbrJetonToGenerate = 5;
+        this.nbrJeton = 5;
+    }
+
+    createLevel2() {
+        this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
+        this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false)
+        this.stepByStep(40, 0);
+        this.poutre(150, 0);
+        this.main.createStep(100, 5, 320, 10, -10);
+        this.main.createStep(100, 100, 470, 10, 0);
+        this.main.faille = this.coffreFort(505, 12, 20);
+        this.createKey(290, 8, 10);
+        this.main.collision();
     }
 
 
@@ -35,8 +75,11 @@ export default class Obstacles {
             mass: 0,
             restitution: 0
         }, this.scene);
+        this.main.allObstacles[this.main.ind++] = poutre;
 
         poutre.position = new BABYLON.Vector3(x + 53, 14, z);
+        poutre.material = new BABYLON.StandardMaterial("buche", this.scene);
+        poutre.material.diffuseTexture = new BABYLON.Texture("images/buche.jpg");
         poutre.rotate(BABYLON.Axis.Z, 1.57);
         poutre.checkCollisions = true;
 
@@ -106,6 +149,7 @@ export default class Obstacles {
             mass: 0,
             restitution: 0
         }, this.scene);
+        this.main.allObstacles[this.main.ind++] = cercle;
         return cercle;
 
     }
@@ -173,10 +217,10 @@ export default class Obstacles {
                 parameter: jeton
             },
             () => {
-                if(jeton.physicsImpostor){
+                if (jeton.physicsImpostor) {
                     jeton.physicsImpostor.dispose();
                     jeton.dispose();
-                    this.nbrJetonToGenerate -= 1;
+                    this.main.nbrJetonToGenerate -= 1;
                     var music = new BABYLON.Sound("Violons", "sounds/coin.wav", this.scene, null, {
                         loop: false,
                         autoplay: true
@@ -188,6 +232,38 @@ export default class Obstacles {
 
 
         this.main.createPanneau(toit, 0, 10, 0, "Invisible\n House", "there is a breach in the house where you can pass and get the token")
+    }
+
+    floorIsLava(x, y, z) {
+        var acc = 6;
+        for (let i = 0; i < 7; i++) {
+            acc += 6;
+            var pos = (i % 2) === 0 ? 7 : -7;
+            let step = this.main.createStep(15, 15, x + (acc * 3), y + acc, z + pos, false);
+            step.modifyMass = () => {
+                step.physicsImpostor.mass = 0.1;
+
+            }
+            step.disparait = () => {
+                step.dispose();
+            }
+            this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                    parameter: step
+                },
+                () => {
+                    setTimeout(step.modifyMass, 3000);
+                    setTimeout(step.disparait, 5000);
+                }));
+        }
+
+    }
+
+    createEtage() {
+        this.floorIsLava(440, 0, 0);
+        this.main.createStep(100, 100, 670, 45, 0, true);
+        this.createInvisibleHouse(670, 45, 0);
     }
 
 }

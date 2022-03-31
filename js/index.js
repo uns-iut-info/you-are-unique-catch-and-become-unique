@@ -6,6 +6,7 @@ let scene;
 let faille;
 window.onload = startGame;
 let level2=true;
+let etage=true;
 let ground;
 let main;
 let obstacle;
@@ -31,12 +32,7 @@ async function startGame() {
 
 
     // Creation des obstacles
-    obstacle.stepByStep(40,0);
-    obstacle.poutre(150,0);
-    main.createStep(100,5,320,10,-10);
-    main.createStep(100,100,470,10,0);
-    main.faille=obstacle.coffreFort(505,12,20);
-    obstacle.createKey(290,8,10);
+    obstacle.createLevel1();
 
     main.collision();
     engine.runRenderLoop(() => {
@@ -46,10 +42,15 @@ async function startGame() {
         scene.render();
 
         main.key.rotate(BABYLON.Axis.Z, 0.02);
-        if (main.nbrJetonToGenerate === 1 && level2){
+        if (main.nbrJetonToGenerate === 1 && etage) {
+            etage = false;
+            obstacle.createEtage();
+        }
+        if (main.nbrJetonToGenerate === 0 && level2) {
             level2=false;
-            createLevel2();
-            //main.collision();
+            obstacle.deleteLevel1();
+            obstacle.createLevel2();
+            main.collision();
         }
     });
 }
@@ -125,7 +126,7 @@ function createArcCamera(scene,target){
 }
 
 //Level2
-
+/*
 function createLevel2(){
     floorIsLava(440,0,0);
     main.createStep(100,100,670,45,0,true);
@@ -154,4 +155,4 @@ function floorIsLava(x,y,z){
             }));
     }
 
-}
+}*/
