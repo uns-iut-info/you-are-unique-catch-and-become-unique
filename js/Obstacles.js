@@ -30,7 +30,8 @@ export default class Obstacles {
         const poutre = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 50, diameterTop: 1, diameterBottom: 1});
         poutre.physicsImpostor = new BABYLON.PhysicsImpostor(poutre, BABYLON.PhysicsImpostor.CylinderImpostor, {
             mass: 0,
-            restitution: 0
+            restitution: 0,
+            friction : 0.9,
         }, this.scene);
         this.main.allObstacles[this.main.ind++] = poutre;
 
@@ -78,14 +79,14 @@ export default class Obstacles {
         cercle.rotation = new BABYLON.Vector3(1.58, 1.58, 0);
         barre.rotation = new BABYLON.Vector3(0, 1.58, 1.58);
         this.main.createStep(12, 12, x, y, z, true);
-        let socle = this.main.createStep(12, 12, x + 40, y + 6, z + 20, true);
-        this.main.createStep(12, 12, x + 100, y, z, true);
+        let socle = this.main.createStep(12, 12, x + 25, y + 6, z + 10, true);
+        this.main.createStep(12, 12, x + 60, y, z, true);
         cercle.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 5, socle.position.z);
         trait2.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 4.5, socle.position.z - 5.7);
         trait1.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 4.5, socle.position.z - 5);
         barre.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 5, socle.position.z - 4);
 
-        cercle.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(x + 40, y + 14, z + 20));
+        cercle.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(x + 25, y + 14, z + 10));
         cercle.particles.minSize = 0.25;
         cercle.particles.maxSize = 0.55
 

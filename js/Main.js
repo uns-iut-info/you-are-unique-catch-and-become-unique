@@ -72,56 +72,52 @@ export default class Main {
         boule.material.emissiveColor = new BABYLON.Color3.Red;
         boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
         boule.material.diffuseTexture.uScale *= 4;
-        /*var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+        var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
         shadowGenerator.addShadowCaster(boule);
         shadowGenerator.useExponentialShadowMap = true;
         var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light2);
         shadowGenerator2.addShadowCaster(boule);
         shadowGenerator2.usePoissonSampling = true;
-        shadowGenerator.getShadowMap().renderList.push(boule);*/
-
+        shadowGenerator.getShadowMap().renderList.push(boule);
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
-            mass: 50,
+            mass: 2,
             restitution: 0,
-            friction:0.9,
+            friction: 0.0
         }, this.scene);
-
-        /*boule.physicsImpostor.physicsBody.linearDamping = 0.999;
-        boule.physicsImpostor.physicsBody.angularDamping = 0.999999999999;*/
+        boule.physicsImpostor.physicsBody.linearDamping = .8;
+        boule.physicsImpostor.physicsBody.angularDamping = .8;
 
         boule.move = () => {
             this.move=true;
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
 
             if (velocityLin.y < -1 && this.impulseDown) {
-                console.log("Pulse down !")
                 this.impulseDown = false;
-                //boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, -300, 0), boule.getAbsolutePosition());
             }
-            if (this.inputStates.up && velocityLin.x < 30) {
+            if (this.inputStates.up && velocityLin.x < 20) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
                 this.ground.position.x = boule.position.x;
             }
-            if (this.inputStates.down && velocityLin.x > -30) {
+            if (this.inputStates.down && velocityLin.x > -20) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
                 this.ground.position.x = boule.position.x;
             }
-            if (this.inputStates.left && velocityLin.z < 30) {
+            if (this.inputStates.left && velocityLin.z < 20) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
             }
-            if (this.inputStates.right && velocityLin.z > -30) {
+            if (this.inputStates.right && velocityLin.z > -20) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(-speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
             }
             if (this.inputStates.space && this.jump) {
                 this.jump = false;
-                boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 90, 0), boule.getAbsolutePosition());
+                boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
+
             }
-            //setTimeout(this.slow,1000,this.boule);
         };
         this.boule = boule;
 

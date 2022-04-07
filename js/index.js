@@ -6,7 +6,6 @@ let canvas;
 let engine;
 let scene;
 window.onload = startGame;
-let createNewLevel = true;
 let ground;
 let main;
 let obstacle;
@@ -41,48 +40,7 @@ async function startGame() {
         main.boule.move();
         scene.activeCamera.move();
         scene.render();
-        if (main.nbrJetonToGenerate === 0){
-            generatorLevel.deleteLevel();
-            main.level+=1;
-            createNewLevel=true;
-        }
-        switch (main.level%4) {
-            case 0:{
-                if (createNewLevel) {
-                    generatorLevel.createLevel1();
-                    main.collision();
-                    createNewLevel = false;
-                }
-                break;
-            }
-            case 1:{
-                if (createNewLevel) {
-                    generatorLevel.createLevel2();
-                    main.collision();
-                    createNewLevel = false;
-                }
-                break;
-            }
-            case 2: {
-                if (createNewLevel) {
-                    generatorLevel.createLevel3();
-                    main.collision();
-                    createNewLevel = false;
-                }
-                main.key.rotate(BABYLON.Axis.Z, 0.02);
-                break;
-            }
-            case 3:{
-                if (createNewLevel) {
-                    generatorLevel.createLevel4();
-                    main.collision();
-                    createNewLevel = false;
-                }
-                break;
-            }
-
-        }
-
+        generatorLevel.generateLevel();
     });
 }
 
@@ -92,7 +50,7 @@ window.addEventListener("resize", () => {
 
 async function createScene() {
     let scene = new BABYLON.Scene(engine);
-    scene.enablePhysics();
+    scene.enablePhysics(new BABYLON.Vector3(0, -80, 0));
     createLights(scene);
     var music = new BABYLON.Sound("music_fond", "sounds/music_fond.wav", scene, null, {loop: true, autoplay: true});
 
@@ -127,27 +85,6 @@ function createLights(scene) {
     light1 = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(1, -2, 1), scene);
     light2 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -2, 1), scene);
 
-}
-
-
-function createFreeCamera(scene) {
-    let camera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(0, 50, 0), scene);
-    camera.attachControl(canvas);
-    // prevent camera to cross ground
-    camera.checkCollisions = true;
-    // avoid flying with the camera
-    camera.applyGravity = true;
-
-    camera.keysUp.push('z'.charCodeAt(0));
-    camera.keysDown.push('s'.charCodeAt(0));
-    camera.keysLeft.push('q'.charCodeAt(0));
-    camera.keysRight.push('d'.charCodeAt(0));
-    camera.keysUp.push('Z'.charCodeAt(0));
-    camera.keysDown.push('S'.charCodeAt(0));
-    camera.keysLeft.push('Q'.charCodeAt(0));
-    camera.keysRight.push('D'.charCodeAt(0));
-
-    return camera;
 }
 
 

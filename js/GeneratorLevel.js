@@ -1,11 +1,55 @@
 export default class GeneratorLevel{
     main;
     obstacle;
+    createNewLevel=true;
     constructor(obstacle,main) {
         this.main=main;
         this.obstacle = obstacle;
         this.scene = main.scene;
         this.nbrJeton = main.nbrJeton;
+    }
+
+    generateLevel() {
+        if (this.main.nbrJetonToGenerate === 0) {
+            this.deleteLevel();
+            this.main.level += 1;
+            this.createNewLevel = true;
+        }
+        switch (this.main.level % 4) {
+            case 0: {
+                if (this.createNewLevel) {
+                    this.createLevel1();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                }
+                break;
+            }
+            case 1: {
+                if (this.createNewLevel) {
+                    this.createLevel2();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                }
+                break;
+            }
+            case 2: {
+                if (this.createNewLevel) {
+                    this.createLevel3();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                }
+                this.main.key.rotate(BABYLON.Axis.Z, 0.02);
+                break;
+            }
+            case 3: {
+                if (this.createNewLevel) {
+                    this.createLevel4();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                }
+                break;
+            }
+        }
     }
 
 
@@ -16,21 +60,21 @@ export default class GeneratorLevel{
 
     createLevel2(){
         this.main.createStep(20, 20, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false)
-        this.main.createStep(17, 17, this.main.respawn.x+40, this.main.respawn.y - 5, this.main.respawn.z, true)
-        this.main.createStep(15, 15, this.main.respawn.x+80, this.main.respawn.y - 5, this.main.respawn.z, true)
-        this.main.createStep(12, 12, this.main.respawn.x+120, this.main.respawn.y - 5, this.main.respawn.z, true)
-        this.main.createStep(100, 5, this.main.respawn.x+200, this.main.respawn.y-5, this.main.respawn.z,true);
-        this.main.createStep(10, 10, this.main.respawn.x+290, this.main.respawn.y - 5, this.main.respawn.z, true)
+        this.main.createStep(17, 17, this.main.respawn.x+30, this.main.respawn.y - 5, this.main.respawn.z, true)
+        this.main.createStep(15, 15, this.main.respawn.x+60, this.main.respawn.y - 5, this.main.respawn.z, true)
+        this.main.createStep(12, 12, this.main.respawn.x+90, this.main.respawn.y - 5, this.main.respawn.z, true)
+        this.main.createStep(100, 5, this.main.respawn.x+165, this.main.respawn.y-5, this.main.respawn.z,true);
+        this.main.createStep(10, 10, this.main.respawn.x+240, this.main.respawn.y - 5, this.main.respawn.z, true)
 
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+40,this.main.respawn.y - 2,this.main.respawn.z);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+30,this.main.respawn.y - 2,this.main.respawn.z);
         this.nbrJeton-=1;
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+80,this.main.respawn.y - 2,this.main.respawn.z);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+60,this.main.respawn.y - 2,this.main.respawn.z);
         this.nbrJeton-=1;
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+120,this.main.respawn.y - 2,this.main.respawn.z);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+90,this.main.respawn.y - 2,this.main.respawn.z);
         this.nbrJeton-=1;
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+200,this.main.respawn.y - 2,this.main.respawn.z);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+165,this.main.respawn.y - 2,this.main.respawn.z);
         this.nbrJeton-=1;
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+290,this.main.respawn.y - 2,this.main.respawn.z);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+240,this.main.respawn.y - 2,this.main.respawn.z);
         this.nbrJeton-=1;
 
 
@@ -39,38 +83,38 @@ export default class GeneratorLevel{
     createLevel3() {
         this.main.nbrJetonToGenerate = 4;
         this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false)
-        this.obstacle.stepByStep(40, 0);
-        this.obstacle.poutre(150, 0);
+        this.obstacle.stepByStep(30, 0);
+        this.obstacle.poutre(140, 0);
         this.main.createStep(100, 5, 320, 10, -10);
-        this.main.createStep(100, 100, 470, 10, 0);
-        this.obstacle.coffreFort(505, 12, 20);
-        this.obstacle.createKey(290, 8, 10);
+        this.main.createStep(100, 100, 435, 10, 0);
+        this.obstacle.coffreFort(469, 12, 20);
+        this.obstacle.createKey(277, 8, 10);
 
     }
     createLevel4() {
         this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false);
 
-        this.main.createStep(100, 5, this.main.respawn.x+80, this.main.respawn.y-5, this.main.respawn.z,true);
+        this.main.createStep(100, 5, this.main.respawn.x+75, this.main.respawn.y-5, this.main.respawn.z,true);
 
-        let stepD=this.main.createStep(23, 7, this.main.respawn.x+130, this.main.respawn.y-5, this.main.respawn.z-9,true);
+        let stepD=this.main.createStep(23, 7, this.main.respawn.x+125, this.main.respawn.y-5, this.main.respawn.z-9,true);
         stepD.rotate(BABYLON.Axis.Y, 1.57);
 
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+130,this.main.respawn.y-2,this.main.respawn.z);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+125,this.main.respawn.y-2,this.main.respawn.z);
         this.nbrJeton-=1;
 
-        this.main.createStep(100, 5, this.main.respawn.x+180, this.main.respawn.y-5, this.main.respawn.z-18,true);
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+230,this.main.respawn.y-2,this.main.respawn.z-17);
+        this.main.createStep(100, 5, this.main.respawn.x+175, this.main.respawn.y-5, this.main.respawn.z-18,true);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+225,this.main.respawn.y-2,this.main.respawn.z-17);
         this.nbrJeton-=1;
 
-        let stepG = this.main.createStep(200, 5, this.main.respawn.x+233, this.main.respawn.y-5, this.main.respawn.z-10,true);
+        let stepG = this.main.createStep(200, 5, this.main.respawn.x+228, this.main.respawn.y-5, this.main.respawn.z-10,true);
         stepG.rotate(BABYLON.Axis.Y, 1.57);
-        this.main.createStep(100, 5, this.main.respawn.x+240, this.main.respawn.y-5.1, this.main.respawn.z-50,true);
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+289,this.main.respawn.y-2,this.main.respawn.z-50);
+        this.main.createStep(100, 5, this.main.respawn.x+235, this.main.respawn.y-5.1, this.main.respawn.z-50,true);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+284,this.main.respawn.y-2,this.main.respawn.z-50);
         this.nbrJeton-=1;
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+191,this.main.respawn.y-2,this.main.respawn.z-50);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+186,this.main.respawn.y-2,this.main.respawn.z-50);
         this.nbrJeton-=1;
-        this.main.createStep(100, 5, this.main.respawn.x+285, this.main.respawn.y-5.1, this.main.respawn.z+87.5,true);
-        this.main.createJeton(this.nbrJeton,this.main.respawn.x+335,this.main.respawn.y-2,this.main.respawn.z+87.5);
+        this.main.createStep(100, 5, this.main.respawn.x+280, this.main.respawn.y-5.1, this.main.respawn.z+87.5,true);
+        this.main.createJeton(this.nbrJeton,this.main.respawn.x+330,this.main.respawn.y-2,this.main.respawn.z+87.5);
         this.nbrJeton-=1;
 
 
