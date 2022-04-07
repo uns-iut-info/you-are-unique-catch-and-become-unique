@@ -2,7 +2,6 @@ export default class Obstacles {
     scene;
     main;
 
-
     constructor(main) {
         this.main = main;
         this.nbrJeton = main.nbrJeton;
@@ -10,46 +9,6 @@ export default class Obstacles {
 
 
     }
-
-    createLevel1() {
-        this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false)
-        this.stepByStep(40, 0);
-        this.poutre(150, 0);
-        this.main.createStep(100, 5, 320, 10, -10);
-        this.main.createStep(100, 100, 470, 10, 0);
-        this.main.faille = this.coffreFort(505, 12, 20);
-        this.createKey(290, 8, 10);
-    }
-
-    deleteLevel1() {
-        this.main.allObstacles.forEach(obstacle => {
-            if (obstacle.physicsImpostor) {
-                obstacle.physicsImpostor.dispose();
-            }
-            obstacle.dispose();
-        });
-        for (let i = 0; i < this.scene.jetons.length; i++) {
-            delete this.scene.jetons[i];
-        }
-        this.main.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
-        this.main.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
-        this.main.nbrJeton = 5;
-        this.main.nbrJetonToGenerate = 5;
-        this.nbrJeton = 5;
-    }
-
-    createLevel2() {
-        this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
-        this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false)
-        this.stepByStep(40, 0);
-        this.poutre(150, 0);
-        this.main.createStep(100, 5, 320, 10, -10);
-        this.main.createStep(100, 100, 470, 10, 0);
-        this.main.faille = this.coffreFort(505, 12, 20);
-        this.createKey(290, 8, 10);
-        this.main.collision();
-    }
-
 
     stepByStep(x, z) {
         this.main.createStep(20, 20, x, 7, z, true);
@@ -59,8 +18,6 @@ export default class Obstacles {
         this.main.createStep(20, 20, x + 73, 7, z, true);
         this.main.createJeton(this.nbrJeton, x + 38, 24, z);
         this.nbrJeton -= 1;
-
-
     }
 
     poutre(x, z) {
@@ -157,14 +114,13 @@ export default class Obstacles {
     coffreFort(x, y, z) {
         //TODO faire un beau coffre
         let cote1 = this.main.createStep(20, 20, x + 10, y + 10, z + 10, false);
-        this.main.faille = this.main.createStep(20, 20, x - 10, y + 10, z + 10, false);
+        let faille = this.main.createStep(20, 20, x - 10, y + 10, z + 10, false);
         let cote2 = this.main.createStep(22, 20, x, y + 10, z, false);
         let cote3 = this.main.createStep(22, 20, x, y + 10, z + 20, false);
         let toit = this.main.createStep(22, 22, x, y + 20, z + 10, false);
 
         cote1.rotate(BABYLON.Axis.Z, 1.57);
-        this.main.faille.rotate(BABYLON.Axis.Z, 1.57);
-        //faille.material.diffuseTexture = new BABYLON.Texture("images/coffre.jpg");
+        faille.rotate(BABYLON.Axis.Z, 1.57);
 
         cote3.rotate(BABYLON.Axis.Z, 1.57);
         cote3.rotate(BABYLON.Axis.X, 1.57);
@@ -183,7 +139,7 @@ export default class Obstacles {
 
         // panneau
         this.main.createPanneau(toit, 0, 10, 0, "Find \nthe key", "You have to find the key for open the bunker")
-        return this.main.faille;
+        this.main.faille = faille;
 
     }
 

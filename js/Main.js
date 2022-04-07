@@ -2,60 +2,66 @@ export default class Main {
     boule;
     key;
     inputStates = {};
-    allStep=[];
-    ind=0;
-    allObstacles=[];
+    allStep = [];
+    ind = 0;
+    allObstacles = [];
     jump = true;
     impulseDown = false;
-    constructor(scene, ground, faille, respawnPoint) {
+    level=0;
+    move=false;
+    faille;
+
+    constructor(scene, ground, respawnPoint) {
         this.scene = scene;
         this.ground = ground;
-        this.faille = faille;
         this.nbrJeton = 5;
         this.nbrJetonToGenerate = 5;
         this.respawn = respawnPoint;
     }
 
-    createStep(w, s, x, y, z,sound) {
-        let step = new BABYLON.MeshBuilder.CreateBox("step_", {size: s, width: w, height: 2, restitution : 0}, this.scene);
+    createStep(w, s, x, y, z, sound) {
+        let step = new BABYLON.MeshBuilder.CreateBox("step_", {
+            size: s,
+            width: w,
+            height: 2,
+            restitution: 0,
+        }, this.scene);
         step.physicsImpostor = new BABYLON.PhysicsImpostor(step, BABYLON.PhysicsImpostor.BoxImpostor, {
             mass: 0,
             restitution: 0,
-            gravity : 18
+            gravity: 18,
+            friction : 0.1,
         }, this.scene);
         step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
-        //let stepMaterial =this.createShadow(step);
         step.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg");
-        //step.material=stepMaterial;
         step.checkCollisions = true;
         step.position = new BABYLON.Vector3(x, y, z);
-        if (sound){
-            this.allStep[this.ind]=step;
-            this.ind+=1;
+        if (sound) {
+            this.allStep[this.ind] = step;
+            this.ind += 1;
         }
         step.receiveShadows = true;
-        this.allObstacles[this.ind++]=step;
-
-
+        this.allObstacles[this.ind++] = step;
         return step;
     }
 
-    castRay(myMesh){
-        var ray = new BABYLON.Ray(myMesh.position, new BABYLON.Vector3(0,-1,0), 4);
-        let hit = this.scene.pickWithRay(ray,(mesh)=>{
+    castRay(myMesh) {
+        var ray = new BABYLON.Ray(myMesh.position, new BABYLON.Vector3(0, -1, 0), 4);
+        let hit = this.scene.pickWithRay(ray, (mesh) => {
             return (mesh !== myMesh);
         })
-        if (hit.pickedMesh){
+        if (hit.pickedMesh) {
             this.jump = true;
             this.impulseDown = true;
         }
     }
-    createSphere(light,light2) {
+
+    createSphere(light, light2) {
         let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, this.scene);
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
         boule.checkCollisions = true;
-        this.scene.registerBeforeRender(()=>{
+        this.scene.registerBeforeRender(() => {
             this.castRay(boule);
         })
 
@@ -66,24 +72,29 @@ export default class Main {
         boule.material.emissiveColor = new BABYLON.Color3.Red;
         boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
         boule.material.diffuseTexture.uScale *= 4;
-        var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+        /*var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
         shadowGenerator.addShadowCaster(boule);
         shadowGenerator.useExponentialShadowMap = true;
         var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light2);
         shadowGenerator2.addShadowCaster(boule);
         shadowGenerator2.usePoissonSampling = true;
-        shadowGenerator.getShadowMap().renderList.push(boule);
+        shadowGenerator.getShadowMap().renderList.push(boule);*/
 
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
             mass: 50,
-            restitution: 0
+            restitution: 0,
+            friction:0.9,
         }, this.scene);
-        boule.move = () => {
 
+        /*boule.physicsImpostor.physicsBody.linearDamping = 0.999;
+        boule.physicsImpostor.physicsBody.angularDamping = 0.999999999999;*/
+
+        boule.move = () => {
+            this.move=true;
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
 
-            if (velocityLin.y < -1  && this.impulseDown){
+            if (velocityLin.y < -1 && this.impulseDown) {
                 console.log("Pulse down !")
                 this.impulseDown = false;
                 //boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, -300, 0), boule.getAbsolutePosition());
@@ -91,12 +102,13 @@ export default class Main {
             if (this.inputStates.up && velocityLin.x < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
-                this.ground.position.x=boule.position.x;
+                this.ground.position.x = boule.position.x;
             }
             if (this.inputStates.down && velocityLin.x > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
-                this.ground.position.x=boule.position.x;          }
+                this.ground.position.x = boule.position.x;
+            }
             if (this.inputStates.left && velocityLin.z < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
@@ -109,8 +121,11 @@ export default class Main {
                 this.jump = false;
                 boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 90, 0), boule.getAbsolutePosition());
             }
+            //setTimeout(this.slow,1000,this.boule);
         };
         this.boule = boule;
+
+
         return this.boule;
     }
 
@@ -121,7 +136,6 @@ export default class Main {
         this.inputStates.up = false;
         this.inputStates.down = false;
         this.inputStates.space = false;
-
         //add the listener to the main, window object, and update the states
         window.addEventListener('keydown', (event) => {
             if ((event.key === "ArrowLeft") || (event.key === "q") || (event.key === "Q")) {
@@ -168,12 +182,11 @@ export default class Main {
         jeton.checkCollisions = true;
         this.scene.jetons[i] = jeton;
         this.nbrJeton = i - 1;
-        this.allObstacles[this.ind++]=jeton;
+        this.allObstacles[this.ind++] = jeton;
         return jeton;
 
     }
-
-    createShadow(ground){
+    createShadow(ground) {
         let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", this.scene);
 
         mirrorMaterial.specularColor = new BABYLON.Color3.Black;
@@ -185,14 +198,12 @@ export default class Main {
         return mirrorMaterial;
     }
 
-    generateJetons() { //genere des jetons a des endroits aleatoire
-        this.scene.jetons[this.nbrJeton] = this.createKey();
-        this.key = this.scene.jetons[this.nbrJeton];
-        let e = 11 - this.nbrJeton.valueOf();
-        for (let i = 0; i < e; i++) {
-            let xrand = Math.floor(Math.random() * 1000 - 480);
-            let zrand = Math.floor(Math.random() * 200 - 100);
-            this.createJeton(i, xrand, 1, zrand);
+    generateJetons(xMax,xMin,zMax,zMin) { //genere des jetons a des endroits aleatoire
+
+        for (let i = 0; i < this.nbrJetonToGenerate; i++) {
+            let xrand = Math.floor(Math.random() * xMax - xMin);
+            let zrand = Math.floor(Math.random() * zMax - zMin);
+            this.createJeton(i, xrand, 7, zrand);
         }
         return this.key;
 
@@ -225,17 +236,19 @@ export default class Main {
                 }
             ));
         });
-        this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            {
-                trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
-                parameter: this.faille
-            },
-            () => {
-                if (this.boule.key) this.faille.dispose();
+        if (this.level===2){
+            console.log(this.faille)
+            this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                    parameter: this.faille
+                },
+                () => {
+                    if (this.boule.key) this.faille.dispose();
 
 
-            }));
-
+                }));
+        }
         this.allStep.forEach(step => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
@@ -243,10 +256,12 @@ export default class Main {
                     parameter: step
                 },
                 () => {
-                    var music = new BABYLON.Sound("Violons", "sounds/rebond.wav", this.scene, null, {
-                        loop: false,
-                        autoplay: true
-                    });
+                    if (step.physicsImpostor && !this.jump) {
+                        var music = new BABYLON.Sound("Violons", "sounds/rebond.wav", this.scene, null, {
+                            loop: false,
+                            autoplay: true
+                        });
+                    }
 
                 }));
         });
@@ -264,11 +279,12 @@ export default class Main {
 
 
     createPanneau(parent, x, y, z, message, messageOnClick) {
+
         var plane = BABYLON.Mesh.CreatePlane("plane", 10, this.scene);
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
         plane.parent = parent;
-        plane.position = new BABYLON.Vector3(x, y, z);
-        plane.rotation.y = 1.58;
+        plane.position = new BABYLON.Vector3(x,y,z);
+        plane.rotation.y=1.58;
 
         var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", message);
         button1.width = 20;
@@ -280,7 +296,7 @@ export default class Main {
             alert(messageOnClick);
         });
         advancedTexture.addControl(button1);
-        this.allObstacles[this.ind++]=button1;
+
         return button1;
     }
 

@@ -1,0 +1,10 @@
+{
+  "name": "Catch-and-become-unique",
+  "version": "1.0.0",
+  "dependencies": {
+    "@babylonjs/core": "^5.0.0",
+    "@babylonjs/gui": "^5.0.0",
+    "babylon": "^6.18.0",
+    "babylonjs": "^5.0.2"
+  }
+}
