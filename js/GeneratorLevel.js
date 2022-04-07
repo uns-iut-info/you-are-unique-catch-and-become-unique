@@ -15,7 +15,7 @@ export default class GeneratorLevel{
             this.main.level += 1;
             this.createNewLevel = true;
         }
-        switch (this.main.level % 4) {
+        switch (this.main.level % 5) {
             case 0: {
                 if (this.createNewLevel) {
                     this.createLevel1();
@@ -45,6 +45,16 @@ export default class GeneratorLevel{
                 if (this.createNewLevel) {
                     this.createLevel4();
                     this.main.collision();
+                    this.createNewLevel = false;
+                }
+                break;
+            }
+            case 4: {
+                if (this.createNewLevel) {
+                    this.createLevel5();
+                    this.main.collision();
+                    this.obstacle.floorIsLava(this.main.respawn.x+10, 0, 0);
+                    this.obstacle.createInvisibleHouse(210, 32, 0);
                     this.createNewLevel = false;
                 }
                 break;
@@ -118,6 +128,12 @@ export default class GeneratorLevel{
         this.nbrJeton-=1;
 
 
+    }
+
+    createLevel5(){
+        this.main.nbrJetonToGenerate = 1;
+        this.main.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false);
+        this.main.createStep(100, 100, 195, 30, 0, true);
     }
 
     deleteLevel() {

@@ -10,7 +10,6 @@ export default class Main {
     level=0;
     move=false;
     faille;
-
     constructor(scene, ground, respawnPoint) {
         this.scene = scene;
         this.ground = ground;
@@ -51,6 +50,7 @@ export default class Main {
             return (mesh !== myMesh);
         })
         if (hit.pickedMesh) {
+            this.dbjump=0;
             this.jump = true;
             this.impulseDown = true;
         }
@@ -95,21 +95,21 @@ export default class Main {
             if (velocityLin.y < -1 && this.impulseDown) {
                 this.impulseDown = false;
             }
-            if (this.inputStates.up && velocityLin.x < 20) {
+            if (this.inputStates.up && velocityLin.x < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
                 this.ground.position.x = boule.position.x;
             }
-            if (this.inputStates.down && velocityLin.x > -20) {
+            if (this.inputStates.down && velocityLin.x > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
                 this.ground.position.x = boule.position.x;
             }
-            if (this.inputStates.left && velocityLin.z < 20) {
+            if (this.inputStates.left && velocityLin.z < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
             }
-            if (this.inputStates.right && velocityLin.z > -20) {
+            if (this.inputStates.right && velocityLin.z > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(-speed, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
             }
@@ -270,7 +270,11 @@ export default class Main {
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
             this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
+            if (this.level===4){
+                return true;
+            }
         }
+
     }
 
 

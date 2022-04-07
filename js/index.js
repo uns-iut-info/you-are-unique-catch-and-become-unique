@@ -18,28 +18,25 @@ async function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
     scene = await createScene();
-
     scene.jetons = [];
     let ground = createGround(scene, 0, -10, 0, 1);
-
     main = new Main(scene, ground, {x: 0, y: 10, z: 0});
     obstacle = new Obstacles(main);
-
     main.modifySettings(window);
     main.createSphere(light1, light2);
-
     generatorLevel = new GeneratorLevel(obstacle,main)
-
     scene.activeCamera = createArcCamera(scene, main.boule);
-
-
     // Creation des obstacles
     main.level=0;
     engine.runRenderLoop(() => {
-        main.events();
+        let reLoadLevel = main.events();
         main.boule.move();
         scene.activeCamera.move();
         scene.render();
+        if(reLoadLevel){
+            generatorLevel.createNewLevel=reLoadLevel;
+            generatorLevel.deleteLevel();
+        }
         generatorLevel.generateLevel();
     });
 }

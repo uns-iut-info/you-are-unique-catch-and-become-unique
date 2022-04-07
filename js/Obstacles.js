@@ -192,9 +192,10 @@ export default class Obstacles {
     }
 
     floorIsLava(x, y, z) {
-        var acc = 6;
+        //this.main.boule.actionManager = new BABYLON.ActionManager(this.scene);
+        var acc = 0;
         for (let i = 0; i < 7; i++) {
-            acc += 6;
+            acc += 5;
             var pos = (i % 2) === 0 ? 7 : -7;
             let step = this.main.createStep(15, 15, x + (acc * 3), y + acc, z + pos, false);
             step.modifyMass = () => {
@@ -210,17 +211,12 @@ export default class Obstacles {
                     parameter: step
                 },
                 () => {
-                    setTimeout(step.modifyMass, 3000);
+                    setTimeout(step.modifyMass, 2000);
                     setTimeout(step.disparait, 5000);
                 }));
         }
 
     }
 
-    createEtage() {
-        this.floorIsLava(440, 0, 0);
-        this.main.createStep(100, 100, 670, 45, 0, true);
-        this.createInvisibleHouse(670, 45, 0);
-    }
 
 }
