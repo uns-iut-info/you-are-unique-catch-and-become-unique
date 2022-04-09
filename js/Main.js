@@ -1,3 +1,5 @@
+import Affichage from "./Affichage.js";
+
 export default class Main {
     boule;
     key;
@@ -7,41 +9,22 @@ export default class Main {
     allObstacles = [];
     jump = true;
     impulseDown = false;
-    level=0;
-    move=false;
+    level = 0;
+    move = false;
     faille;
+    affichage;
+    life=[];
+    nbrLife=2;
+    access=true;
+
     constructor(scene, ground, respawnPoint) {
         this.scene = scene;
         this.ground = ground;
         this.nbrJeton = 5;
         this.nbrJetonToGenerate = 5;
+        this.allJeton = 5;
         this.respawn = respawnPoint;
-    }
-
-    createStep(w, s, x, y, z, sound) {
-        let step = new BABYLON.MeshBuilder.CreateBox("step_", {
-            size: s,
-            width: w,
-            height: 2,
-            restitution: 0,
-        }, this.scene);
-        step.physicsImpostor = new BABYLON.PhysicsImpostor(step, BABYLON.PhysicsImpostor.BoxImpostor, {
-            mass: 0,
-            restitution: 0,
-            gravity: 18,
-            friction : 0.1,
-        }, this.scene);
-        step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
-        step.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg");
-        step.checkCollisions = true;
-        step.position = new BABYLON.Vector3(x, y, z);
-        if (sound) {
-            this.allStep[this.ind] = step;
-            this.ind += 1;
-        }
-        step.receiveShadows = true;
-        this.allObstacles[this.ind++] = step;
-        return step;
+        this.printer = new Affichage(this);
     }
 
     castRay(myMesh) {
@@ -50,7 +33,6 @@ export default class Main {
             return (mesh !== myMesh);
         })
         if (hit.pickedMesh) {
-            this.dbjump=0;
             this.jump = true;
             this.impulseDown = true;
         }
@@ -89,7 +71,8 @@ export default class Main {
         boule.physicsImpostor.physicsBody.angularDamping = .8;
 
         boule.move = () => {
-            this.move=true;
+            this.move = true;
+
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
 
             if (velocityLin.y < -1 && this.impulseDown) {
@@ -98,12 +81,11 @@ export default class Main {
             if (this.inputStates.up && velocityLin.x < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
-                this.ground.position.x = boule.position.x;
+
             }
             if (this.inputStates.down && velocityLin.x > -30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
-                this.ground.position.x = boule.position.x;
             }
             if (this.inputStates.left && velocityLin.z < 30) {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
@@ -118,7 +100,10 @@ export default class Main {
                 boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
 
             }
+            this.ground.position.x = boule.position.x;
+            this.ground.position.z = boule.position.z;
         };
+
         this.boule = boule;
 
 
@@ -182,6 +167,7 @@ export default class Main {
         return jeton;
 
     }
+
     createShadow(ground) {
         let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", this.scene);
 
@@ -194,7 +180,7 @@ export default class Main {
         return mirrorMaterial;
     }
 
-    generateJetons(xMax,xMin,zMax,zMin) { //genere des jetons a des endroits aleatoire
+    generateJetons(xMax, xMin, zMax, zMin) { //genere des jetons a des endroits aleatoire
 
         for (let i = 0; i < this.nbrJetonToGenerate; i++) {
             let xrand = Math.floor(Math.random() * xMax - xMin);
@@ -206,6 +192,8 @@ export default class Main {
     }
 
     collision() {
+        console.log(this.allJeton,this.nbrJetonToGenerate);
+        var essais = this.allJeton;
         this.boule.actionManager = new BABYLON.ActionManager(this.scene);
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
@@ -226,14 +214,17 @@ export default class Main {
                             loop: false,
                             autoplay: true
                         });
+
                         this.nbrJetonToGenerate -= 1;
                     }
-
+                    console.log(this.allJeton,this.nbrJetonToGenerate,essais);
+                    this.allJeton=essais; //TODO remplacer ca, je n'arrive pas a changer la valeur de this.allJeton depuis GenerateLevel, ca le change dans le console.log plus haut mais pas la
+                    this.affichage.dispose();
+                    this.printer.printNumberOfJeton();
                 }
             ));
         });
-        if (this.level===2){
-            console.log(this.faille)
+        if (this.level === 2) {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
                     trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
@@ -270,34 +261,28 @@ export default class Main {
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
             this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
-            if (this.level===4){
+            this.life[this.nbrLife].dispose();
+            this.nbrLife-=1;
+            if(this.nbrLife===-1){
+                this.level = 0;
+                this.nbrLife=2;
+                delete this.key;
+                this.access=true;
+                if (this.boule.key)this.boule.key=false;
+                this.affichage.dispose();
                 return true;
             }
+            if (this.level === 4) {
+                this.affichage.dispose();
+                return true;
+            }
+
+        }
+        if(this.access){
+            this.printer.printLife();
+            this.access=false;
         }
 
-    }
-
-
-    createPanneau(parent, x, y, z, message, messageOnClick) {
-
-        var plane = BABYLON.Mesh.CreatePlane("plane", 10, this.scene);
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
-        plane.parent = parent;
-        plane.position = new BABYLON.Vector3(x,y,z);
-        plane.rotation.y=1.58;
-
-        var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", message);
-        button1.width = 20;
-        button1.height = 20;
-        button1.color = "white";
-        button1.fontSize = 200;
-        button1.background = "green";
-        button1.onPointerUpObservable.add(function () {
-            alert(messageOnClick);
-        });
-        advancedTexture.addControl(button1);
-
-        return button1;
     }
 
 

@@ -1,7 +1,6 @@
 import Obstacles from "./Obstacles.js";
 import Main from "./Main.js";
 import GeneratorLevel from "./GeneratorLevel.js";
-
 let canvas;
 let engine;
 let scene;
@@ -18,6 +17,7 @@ async function startGame() {
     canvas = document.querySelector("#myCanvas");
     engine = new BABYLON.Engine(canvas, true);
     scene = await createScene();
+
     scene.jetons = [];
     let ground = createGround(scene, 0, -10, 0, 1);
     main = new Main(scene, ground, {x: 0, y: 10, z: 0});
@@ -26,8 +26,8 @@ async function startGame() {
     main.createSphere(light1, light2);
     generatorLevel = new GeneratorLevel(obstacle,main)
     scene.activeCamera = createArcCamera(scene, main.boule);
-    // Creation des obstacles
     main.level=0;
+
     engine.runRenderLoop(() => {
         let reLoadLevel = main.events();
         main.boule.move();
@@ -59,6 +59,11 @@ async function createScene() {
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
+
+
+    scene.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+
     return scene;
 }
 
@@ -78,7 +83,6 @@ function createGround(scene, x, y, z, id) {
 }
 
 function createLights(scene) {
-    //let light0 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -1, 0), scene);
     light1 = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(1, -2, 1), scene);
     light2 = new BABYLON.DirectionalLight("dir0", new BABYLON.Vector3(-1, -2, 1), scene);
 
