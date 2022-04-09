@@ -194,6 +194,7 @@ export default class Main {
     collision() {
         console.log(this.allJeton,this.nbrJetonToGenerate);
         var essais = this.allJeton;
+        var key=this.key;
         this.boule.actionManager = new BABYLON.ActionManager(this.scene);
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
@@ -224,7 +225,7 @@ export default class Main {
                 }
             ));
         });
-        if (this.level === 2) {
+        if (this.level%5 === 2) {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
                     trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,

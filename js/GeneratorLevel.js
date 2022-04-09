@@ -181,6 +181,7 @@ export default class GeneratorLevel{
         this.main.nbrJetonToGenerate = 5;
         this.nbrJeton = 5;
         this.obstacle.nbrJeton=5;
+        this.main.boule.key=false;
         this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
 
     }
