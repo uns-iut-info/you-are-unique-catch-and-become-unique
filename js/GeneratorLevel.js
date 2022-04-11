@@ -6,6 +6,7 @@ export default class GeneratorLevel{
     obstacle;
     createNewLevel=true;
     access=false;
+    poutres=[];
     constructor(obstacle,main) {
         this.main=main;
         this.obstacle = obstacle;
@@ -23,18 +24,14 @@ export default class GeneratorLevel{
             this.main.level += 1;
             this.createNewLevel = true;
         }
-        switch (this.main.level % 5) {
+        switch (this.main.level % 6) {
             case 0: {
                 if (this.createNewLevel) {
                     this.createLevel1();
                     this.main.collision();
                     this.createNewLevel = false;
-
                     if(this.access)this.main.affichage.dispose();
-
                     this.printer.printNumberOfJeton();
-
-
                 }
                 break;
             }
@@ -78,7 +75,21 @@ export default class GeneratorLevel{
                     this.createNewLevel = false;
                     this.main.affichage.dispose();
                     this.printer.printNumberOfJeton();
+                }
+                break;
+            }
+            case 5: {
+                if (this.createNewLevel) {
+                    this.main.floor=false;
+                    this.createLevel6();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                    this.main.affichage.dispose();
+                    this.printer.printNumberOfJeton();
                     this.access=true;
+                }
+                for (let i = 0; i < this.poutres.length; i++) {
+                    this.poutres[i].rotate(BABYLON.Axis.Y, 0.02);
                 }
                 break;
             }
@@ -161,6 +172,63 @@ export default class GeneratorLevel{
         this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false);
         this.obstacle.createStep(100, 100, 195, 30, 0, true);
     }
+
+    createLevel6(){
+        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false);
+        this.poutres[0] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
+        this.poutres[0].physicsImpostor = new BABYLON.PhysicsImpostor(this.poutres[0], BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        this.poutres[0].position=new BABYLON.Vector3(60,-20,0);
+        this.poutres[0].rotate(BABYLON.Axis.Z, 1.57);
+        this.poutres[0].material = new BABYLON.StandardMaterial("poutre1", this.scene);
+        this.poutres[0].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+
+
+        this.poutres[1] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
+        this.poutres[1].physicsImpostor = new BABYLON.PhysicsImpostor(this.poutres[1], BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        this.poutres[1].position=new BABYLON.Vector3(140,-20,0);
+        this.poutres[1].rotate(BABYLON.Axis.Z, 1.57);
+        this.poutres[1].rotate(BABYLON.Axis.X, 3.14);
+        this.poutres[1].material = new BABYLON.StandardMaterial("poutre2", this.scene);
+        this.poutres[1].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+
+        this.poutres[2] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
+        this.poutres[2].physicsImpostor = new BABYLON.PhysicsImpostor(this.poutres[2], BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        this.poutres[2].position=new BABYLON.Vector3(220,-20,0);
+        this.poutres[2].rotate(BABYLON.Axis.Z, 1.57);
+        this.poutres[2].material = new BABYLON.StandardMaterial("poutre3", this.scene);
+        this.poutres[2].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+        var acc=0;
+        for (let i = 1; i < 5; i++) {
+            acc+=50;
+            this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+acc,this.main.respawn.y,this.main.respawn.z);
+            this.nbrJeton-=1;
+
+        }
+        this.obstacle.createStep(10, 10, 290, this.main.respawn.y-5, this.main.respawn.z, false);
+        this.generatorToken.createJeton(this.nbrJeton,300,this.main.respawn.y-3,this.main.respawn.z);
+        this.nbrJeton-=1;
+
+        for (let i = 0; i < this.poutres.length; i++) {
+            this.main.allObstacles[this.main.ind++] = this.poutres[i];
+        }
+
+
+
+    }
+
+
 
     deleteLevel() {
         this.main.allObstacles.forEach(obstacle => {

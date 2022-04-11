@@ -222,6 +222,7 @@ export default class Obstacles {
     }
 
     floorIsLava(x, y, z) {
+        this.main.floor=true;
         //this.main.boule.actionManager = new BABYLON.ActionManager(this.scene);
         var acc = 0;
         for (let i = 0; i < 7; i++) {

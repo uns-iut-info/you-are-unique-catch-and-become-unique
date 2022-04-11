@@ -16,6 +16,8 @@ export default class Main {
     life=[];
     nbrLife=2;
     access=true;
+    floor;
+
 
     constructor(scene, ground, respawnPoint) {
         this.scene = scene;
@@ -25,6 +27,7 @@ export default class Main {
         this.allJeton = 5;
         this.respawn = respawnPoint;
         this.printer = new Affichage(this);
+
     }
 
     castRay(myMesh) {
@@ -148,26 +151,6 @@ export default class Main {
         }, false);
     }
 
-    createJeton(i, x, y, z) { // cree un jeton aux coordonnées (x,y,z)
-        let jeton = new BABYLON.MeshBuilder.CreateSphere("jeton_" + i, {diameter: 2}, this.scene);
-        jeton.physicsImpostor = new BABYLON.PhysicsImpostor(jeton, BABYLON.PhysicsImpostor.SphereImpostor, {
-            mass: 0,
-            restitution: 0
-        }, this.scene);
-        let jetonMaterial = new BABYLON.StandardMaterial("jetonMaterial", this.scene);
-        jeton.position = new BABYLON.Vector3(x, y, z)
-        jetonMaterial.emissiveColor = new BABYLON.Color3.Blue;
-        jeton.material = jetonMaterial;
-        jeton.material.specularColor = new BABYLON.Color3(0, 0, 0);
-
-        jeton.checkCollisions = true;
-        this.scene.jetons[i] = jeton;
-        this.nbrJeton = i - 1;
-        this.allObstacles[this.ind++] = jeton;
-        return jeton;
-
-    }
-
     createShadow(ground) {
         let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", this.scene);
 
@@ -178,17 +161,6 @@ export default class Main {
         ground.material = mirrorMaterial;
         mirrorMaterial.reflectionTexture.renderList.push(this.boule);
         return mirrorMaterial;
-    }
-
-    generateJetons(xMax, xMin, zMax, zMin) { //genere des jetons a des endroits aleatoire
-
-        for (let i = 0; i < this.nbrJetonToGenerate; i++) {
-            let xrand = Math.floor(Math.random() * xMax - xMin);
-            let zrand = Math.floor(Math.random() * zMax - zMin);
-            this.createJeton(i, xrand, 7, zrand);
-        }
-        return this.key;
-
     }
 
     collision() {
@@ -225,7 +197,7 @@ export default class Main {
                 }
             ));
         });
-        if (this.level%5 === 2) {
+        if (this.key) {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
                     trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
@@ -273,7 +245,7 @@ export default class Main {
                 this.affichage.dispose();
                 return true;
             }
-            if (this.level === 4) {
+            if (this.floor) {
                 this.affichage.dispose();
                 return true;
             }
