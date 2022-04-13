@@ -17,14 +17,15 @@ export default class Main {
     nbrLife=2;
     access=true;
     floor;
+    pique=false;
 
 
     constructor(scene, ground, respawnPoint) {
         this.scene = scene;
         this.ground = ground;
-        this.nbrJeton = 5;
-        this.nbrJetonToGenerate = 5;
-        this.allJeton = 5;
+        this.nbrJeton = 5; // nombre de jetons restant a créer
+        this.nbrJetonToGenerate = 5; // nombre de jetons courant a recuperer
+        this.allJeton = 5; // nombre de jetons crée au total dans le niveau
         this.respawn = respawnPoint;
         this.printer = new Affichage(this);
 
@@ -230,7 +231,8 @@ export default class Main {
     }
 
     events() {
-        if (this.boule.intersectsMesh(this.ground, true)) {
+        if (this.boule.intersectsMesh(this.ground, true) || this.pique ) {
+            this.pique=false;
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
             this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));

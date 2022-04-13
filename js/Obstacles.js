@@ -1,4 +1,5 @@
 import GeneratorToken from "./GeneratorToken.js";
+
 export default class Obstacles {
     scene;
     main;
@@ -59,7 +60,7 @@ export default class Obstacles {
         poutre.physicsImpostor = new BABYLON.PhysicsImpostor(poutre, BABYLON.PhysicsImpostor.CylinderImpostor, {
             mass: 0,
             restitution: 0,
-            friction : 0.9,
+            friction: 0.9,
         }, this.scene);
         this.main.allObstacles[this.main.ind++] = poutre;
 
@@ -222,8 +223,7 @@ export default class Obstacles {
     }
 
     floorIsLava(x, y, z) {
-        this.main.floor=true;
-        //this.main.boule.actionManager = new BABYLON.ActionManager(this.scene);
+        this.main.floor = true;
         var acc = 0;
         for (let i = 0; i < 7; i++) {
             acc += 5;
@@ -257,6 +257,7 @@ export default class Obstacles {
         plane.position = new BABYLON.Vector3(x, y, z);
         plane.rotation.y = 1.58;
 
+
         var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", message);
         button1.width = 20;
         button1.height = 20;
@@ -270,6 +271,193 @@ export default class Obstacles {
 
         return button1;
     }
+    
+    createRondin(x,y,z){
+        let poutres=[];
+        poutres[0] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
+        poutres[0].physicsImpostor = new BABYLON.PhysicsImpostor(poutres[0], BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        poutres[0].position=new BABYLON.Vector3(x,y,z);
+        poutres[0].rotate(BABYLON.Axis.Z, 1.57);
+        poutres[0].material = new BABYLON.StandardMaterial("poutre1", this.scene);
+        poutres[0].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+
+        poutres[1] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
+        poutres[1].physicsImpostor = new BABYLON.PhysicsImpostor(poutres[1], BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        poutres[1].position=new BABYLON.Vector3(x+80,y,z);
+        poutres[1].rotate(BABYLON.Axis.Z, 1.57);
+        poutres[1].rotate(BABYLON.Axis.X, 3.14);
+        poutres[1].material = new BABYLON.StandardMaterial("poutre2", this.scene);
+        poutres[1].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+
+        poutres[2] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
+        poutres[2].physicsImpostor = new BABYLON.PhysicsImpostor(poutres[2], BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        poutres[2].position=new BABYLON.Vector3(x+160,y,z);
+        poutres[2].rotate(BABYLON.Axis.Z, 1.57);
+        poutres[2].material = new BABYLON.StandardMaterial("poutre3", this.scene);
+        poutres[2].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+        return poutres;
+    }
+
+    createPique(x, y, z,descendFirst) {
+        let step = this.createStep(10, 10, x, y, z, false);
+        step.monte = !descendFirst;
+        var barre = [];
+        for (let i = 0; i < 6; i++) {
+            barre[i] = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {
+                height: 3,
+                diameterTop: 2,
+                diameterBottom: 0.5
+            });
+            barre[i].physicsImpostor = new BABYLON.PhysicsImpostor(barre[i], BABYLON.PhysicsImpostor.CylinderImpostor, {
+                mass: 0,
+                restitution: 0
+            }, this.scene);
+            barre[i].rotate(BABYLON.Axis.Z, 3.14);
+            step.addChild(barre[i]);
+
+            //barre[i]= (i%3===0 && i<3) ? new BABYLON.Vector3(-3, 2, -3) : new BABYLON.Vector3(3, 2, -3);
+            //barre[i]= (i%3===1 && i<3) ? new BABYLON.Vector3(-3, 2, 0) : new BABYLON.Vector3(3, 2, 0);
+            //barre[i]= (i%3===2 && i<3) ? new BABYLON.Vector3(-3, 2, 3) : new BABYLON.Vector3(3, 2, 3);
+
+
+        }
+        //TODO factoriser
+        barre[0].position = new BABYLON.Vector3(-3, 2, -3);
+        barre[1].position = new BABYLON.Vector3(-3, 2, 0);
+        barre[2].position = new BABYLON.Vector3(-3, 2, 3);
+
+        barre[3].position = new BABYLON.Vector3(3, 2, -3);
+        barre[4].position = new BABYLON.Vector3(3, 2, 0);
+        barre[5].position = new BABYLON.Vector3(3, 2, 3);
+
+        step.move = function movePique(direction){
+            let dir;
+            let axe;
+            let vecteur=new BABYLON.Vector3(0, 0, 0);
+            switch (direction){
+                case "x": {
+                    dir=step.position.x;
+                    axe=x;
+                    vecteur = new BABYLON.Vector3(0.22, 0, 0);
+                    break;
+                }
+                case "y":{
+                    dir=step.position.y;
+                    axe=y;
+                    vecteur = new BABYLON.Vector3(0, 0.22, 0);
+                    break;
+                }
+                case "z":{
+                    dir=step.position.z;
+                    axe=z;
+                    vecteur = new BABYLON.Vector3(0, 0, 0.22);
+                    break;
+                }
+            }
+            if (step.monte) {
+                    if (dir < axe + 7) {
+                        step.position = new BABYLON.Vector3(step.position.x+vecteur.x, step.position.y+vecteur.y, step.position.z+vecteur.z);
+                    } else {
+                        step.monte = false;
+                    }
+            } else{
+                if (dir > axe - 7) {
+                    step.position = new BABYLON.Vector3(step.position.x-vecteur.x, step.position.y-vecteur.y, step.position.z-vecteur.z);
+                } else {
+                    step.monte = true;
+                }
+            }
+        }
+
+        barre.forEach(b => {
+            b.actionManager = new BABYLON.ActionManager(this.scene);
+            b.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                    parameter: this.main.boule
+                },
+                () => {
+                    this.main.pique = true;
+
+                }));
+        });
+
+        return step;
+    }
+
+
+    createBoulet(x,y,z){
+
+        let manche = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {
+            height: 30,
+            diameterTop: 2.5,
+            diameterBottom: 2.5
+        });
+        manche.physicsImpostor = new BABYLON.PhysicsImpostor(manche, BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0
+        }, this.scene);
+        manche.droite = true;
+        manche.position=new BABYLON.Vector3(x,y,z);
+        manche.rotate(BABYLON.Axis.Z, 3.14);
+
+        var piqueG = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 10, diameterTop: 1, diameterBottom: 10});
+        piqueG.physicsImpostor = new BABYLON.PhysicsImpostor(piqueG, BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+
+        var piqueD = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 10, diameterTop: 1, diameterBottom: 10});
+        piqueD.physicsImpostor = new BABYLON.PhysicsImpostor(piqueD, BABYLON.PhysicsImpostor.CylinderImpostor, {
+            mass: 0,
+            restitution: 0,
+            friction : 1,
+        }, this.scene);
+        piqueD.position=new BABYLON.Vector3(x,y-18,z-5);
+        piqueG.position=new BABYLON.Vector3(x,y-18,z+5);
+
+        piqueG.rotate(BABYLON.Axis.X, 1.57);
+        piqueD.rotate(BABYLON.Axis.X, -1.57);
+
+        manche.addChild(piqueG);
+        manche.addChild(piqueD);
+        var rotation=0;
+        manche.move=()=>{
+            if (manche.droite) {
+                if (rotation < 1.57) {
+                    manche.rotate(BABYLON.Axis.X, 0.02);
+                    rotation+=0.02;
+                } else {
+                    manche.droite = false;
+                }
+            } else {
+                if (rotation > -1.57) {
+                    manche.rotate(BABYLON.Axis.X, -0.02);
+                    rotation-=0.02;
+                } else {
+                    manche.droite = true;
+                }
+            }
+        }
+        this.main.allObstacles[this.main.ind++] = manche;
+        return manche;
+
+    }
+
+
 
 
 }

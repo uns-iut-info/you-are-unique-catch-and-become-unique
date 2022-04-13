@@ -24,7 +24,7 @@ export default class GeneratorLevel{
             this.main.level += 1;
             this.createNewLevel = true;
         }
-        switch (this.main.level % 6) {
+        switch (this.main.level % 7) {
             case 0: {
                 if (this.createNewLevel) {
                     this.createLevel1();
@@ -86,11 +86,35 @@ export default class GeneratorLevel{
                     this.createNewLevel = false;
                     this.main.affichage.dispose();
                     this.printer.printNumberOfJeton();
-                    this.access=true;
+
                 }
                 for (let i = 0; i < this.poutres.length; i++) {
                     this.poutres[i].rotate(BABYLON.Axis.Y, 0.02);
                 }
+                break;
+            }
+            case 6: {
+                if (this.createNewLevel) {
+                    this.main.floor=false;
+                    this.main.collision();
+                    this.createLevel7();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                    this.main.affichage.dispose();
+                    this.printer.printNumberOfJeton();
+                    this.access=true;
+                }
+                for (let i = 0; i < this.pique.length; i++) {
+                    if (i===0){
+                        this.pique[i].move("y");
+                    }
+                    else{
+                        this.pique[i].move("z");
+                    }
+                }
+                this.manche.move();
+
+
                 break;
             }
         }
@@ -175,40 +199,7 @@ export default class GeneratorLevel{
 
     createLevel6(){
         this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false);
-        this.poutres[0] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
-        this.poutres[0].physicsImpostor = new BABYLON.PhysicsImpostor(this.poutres[0], BABYLON.PhysicsImpostor.CylinderImpostor, {
-            mass: 0,
-            restitution: 0,
-            friction : 1,
-        }, this.scene);
-        this.poutres[0].position=new BABYLON.Vector3(60,-20,0);
-        this.poutres[0].rotate(BABYLON.Axis.Z, 1.57);
-        this.poutres[0].material = new BABYLON.StandardMaterial("poutre1", this.scene);
-        this.poutres[0].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
-
-
-        this.poutres[1] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
-        this.poutres[1].physicsImpostor = new BABYLON.PhysicsImpostor(this.poutres[1], BABYLON.PhysicsImpostor.CylinderImpostor, {
-            mass: 0,
-            restitution: 0,
-            friction : 1,
-        }, this.scene);
-        this.poutres[1].position=new BABYLON.Vector3(140,-20,0);
-        this.poutres[1].rotate(BABYLON.Axis.Z, 1.57);
-        this.poutres[1].rotate(BABYLON.Axis.X, 3.14);
-        this.poutres[1].material = new BABYLON.StandardMaterial("poutre2", this.scene);
-        this.poutres[1].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
-
-        this.poutres[2] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
-        this.poutres[2].physicsImpostor = new BABYLON.PhysicsImpostor(this.poutres[2], BABYLON.PhysicsImpostor.CylinderImpostor, {
-            mass: 0,
-            restitution: 0,
-            friction : 1,
-        }, this.scene);
-        this.poutres[2].position=new BABYLON.Vector3(220,-20,0);
-        this.poutres[2].rotate(BABYLON.Axis.Z, 1.57);
-        this.poutres[2].material = new BABYLON.StandardMaterial("poutre3", this.scene);
-        this.poutres[2].material.diffuseTexture = new BABYLON.Texture("images/fleches.png");
+        this.poutres=this.obstacle.createRondin(60,-20,0);
         var acc=0;
         for (let i = 1; i < 5; i++) {
             acc+=50;
@@ -223,6 +214,38 @@ export default class GeneratorLevel{
         for (let i = 0; i < this.poutres.length; i++) {
             this.main.allObstacles[this.main.ind++] = this.poutres[i];
         }
+    }
+
+    createLevel7(){
+        this.main.allJeton=4;
+        this.main.nbrJetonToGenerate = 4;
+        var rotation=1.57;
+        var sens;
+        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, false);
+        let step1=this.obstacle.createStep(7, 30, this.main.respawn.x+30, this.main.respawn.y - 5, this.main.respawn.z, false);
+        let step2=this.obstacle.createStep(7, 30, this.main.respawn.x+85, this.main.respawn.y - 5, this.main.respawn.z, false);
+        this.pique=[];
+        for (let i = 0; i < 3; i++) {
+            var acc = i<2 ? 10 : -10;
+            this.pique[i] = i===0 ? this.obstacle.createPique(60,this.main.respawn.y - 5,this.main.respawn.z) : this.obstacle.createPique(110,this.main.respawn.y,this.main.respawn.z+acc,sens = i !== 2);
+            if (i>0) this.pique[i].rotate(BABYLON.Axis.X, rotation=i===1? -1.57 : 1.57);
+        }
+        let step3=this.obstacle.createStep(7, 130, this.main.respawn.x+180, this.main.respawn.y - 5, this.main.respawn.z, false);
+
+        this.manche = this.obstacle.createBoulet(this.main.respawn.x+180,this.main.respawn.y+20,this.main.respawn.z);
+
+        step1.rotate(BABYLON.Axis.Y, rotation);
+        step2.rotate(BABYLON.Axis.Y, rotation);
+        step3.rotate(BABYLON.Axis.Y, rotation);
+
+        this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+30,this.main.respawn.y-3,this.main.respawn.z);
+        this.nbrJeton-=1;
+        this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+85,this.main.respawn.y-3,this.main.respawn.z);
+        this.nbrJeton-=1;
+        this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+135,this.main.respawn.y-3,this.main.respawn.z);
+        this.nbrJeton-=1;
+        this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+225,this.main.respawn.y-3,this.main.respawn.z);
+        this.nbrJeton-=1;
 
 
 

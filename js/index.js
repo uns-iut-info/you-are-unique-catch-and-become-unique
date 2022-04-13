@@ -29,7 +29,7 @@ async function startGame() {
     main.level=0;
 
     engine.runRenderLoop(() => {
-        let reLoadLevel = main.events();
+        let reLoadLevel = main.events(false);
         main.boule.move();
         scene.activeCamera.move();
         scene.render();
@@ -54,7 +54,7 @@ async function createScene() {
     var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 2000.0}, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("images/skybox", scene);
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("images/skybox/skybox", scene);
     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
