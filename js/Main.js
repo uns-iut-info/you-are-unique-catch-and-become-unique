@@ -14,9 +14,9 @@ export default class Main {
     faille;
     affichage;
     life=[];
-    nbrLife=2;
+    nbrLife=3;
     access=true;
-    floor;
+    floorisLava;
     pique=false;
 
 
@@ -43,7 +43,7 @@ export default class Main {
         }
     }
 
-    createSphere(light, light2) {
+    createSphere(light) {
         let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, this.scene);
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
@@ -62,7 +62,7 @@ export default class Main {
         var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
         shadowGenerator.addShadowCaster(boule);
         shadowGenerator.useExponentialShadowMap = true;
-        var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light2);
+        var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light);
         shadowGenerator2.addShadowCaster(boule);
         shadowGenerator2.usePoissonSampling = true;
         shadowGenerator.getShadowMap().renderList.push(boule);
@@ -85,12 +85,12 @@ export default class Main {
                 this.impulseDown = false;
             }
             if (this.inputStates.up && velocityLin.x < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-speed+speed/2, 0));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-speed+speed/1.5, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
 
             }
             if (this.inputStates.down && velocityLin.x > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+speed-speed/2, 0));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+speed-speed/1.5, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
             }
             if (this.inputStates.left && velocityLin.z < 30) {
@@ -169,7 +169,6 @@ export default class Main {
     collision() {
         console.log(this.allJeton,this.nbrJetonToGenerate);
         var essais = this.allJeton;
-        var key=this.key;
         this.boule.actionManager = new BABYLON.ActionManager(this.scene);
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
@@ -183,17 +182,19 @@ export default class Main {
                         this.key.particles.stop();
                     }
                     if (jeton.physicsImpostor) {
-                        jeton.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(jeton.position.x, jeton.position.y+3,jeton.position.z));
-                        jeton.particles.minSize = 0.25;
-                        jeton.particles.maxSize = 0.55
+                        if(jeton !== this.key){
+                            jeton.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(jeton.position.x, jeton.position.y + 3, jeton.position.z));
+                            jeton.particles.minSize = 0.25;
+                            jeton.particles.maxSize = 0.55
 
-                        jeton.particles.minLifeTime = 1;
-                        jeton.particles.maxLifeTime = 10;
-                        jeton.particles.updateSpeed = 0.9115;
-                        jeton.particles.start();
-                        setTimeout(function(){
-                            jeton.particles.stop();
-                        }.bind(this), 200);
+                            jeton.particles.minLifeTime = 1;
+                            jeton.particles.maxLifeTime = 10;
+                            jeton.particles.updateSpeed = 0.9115;
+                            jeton.particles.start();
+                            setTimeout(function () {
+                                jeton.particles.stop();
+                            }.bind(this), 200);
+                        }
                         jeton.physicsImpostor.dispose();
                         jeton.dispose();
 
@@ -254,15 +255,17 @@ export default class Main {
             this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
             this.life[this.nbrLife].dispose();
             this.nbrLife-=1;
-            if(this.nbrLife===-1){
+            if(this.nbrLife===0){
+                var gameover = new BABYLON.Sound("gameover", "sounds/game_over.wav", this.scene, null, {loop: false, autoplay: true});
                 this.resetGame();
                 return true;
             }
-            if (this.floor) {
+            if(this.nbrLife===1)this.music = new BABYLON.Sound("heartbeat", "sounds/heartbeat.wav", this.scene, null, {loop: true, autoplay: true});
+
+            if (this.floorisLava) {// si c'est le niveau floorIsLava on doit regenerer le niveau completement
                 this.affichage.dispose();
                 return true;
             }
-            if(this.nbrLife===0)this.music = new BABYLON.Sound("heartbeat", "sounds/heartbeat.wav", this.scene, null, {loop: true, autoplay: true});
 
         }
         if(this.access){
@@ -275,7 +278,7 @@ export default class Main {
     resetGame(){
         this.music.stop();
         this.level = 0;
-        this.nbrLife=2;
+        this.nbrLife=3;
         delete this.key;
         this.access=true;
         if (this.boule.key)this.boule.key=false;

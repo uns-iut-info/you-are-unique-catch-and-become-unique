@@ -15,8 +15,8 @@ export default class Affichage{
     }
 
     printLife() {
-        for (let i = 0; i < 3; i++) {
-            var acc = 50*i;
+        var acc=0;
+        for (let i = 1; i < 4; i++) {
             var image = new BABYLON.GUI.Image("but", "images/ball.png");
             image.height = "50px";
             image.width = "50px";
@@ -25,6 +25,7 @@ export default class Affichage{
             image.left = `${acc} px`;
             this.main.life[i] = image;
             this.main.scene.advancedTexture.addControl(image);
+            acc = 50*i;
         }
     }
 }
