@@ -28,6 +28,7 @@ export default class Main {
         this.allJeton = 5; // nombre de jetons crée au total dans le niveau
         this.respawn = respawnPoint;
         this.printer = new Affichage(this);
+        this.music = new BABYLON.Sound("music_fond", "sounds/music_fond.wav", scene, null, {loop: true, autoplay: true});
 
     }
 
@@ -78,25 +79,26 @@ export default class Main {
             this.move = true;
 
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
+            let angularVel = boule.physicsImpostor.getAngularVelocity();
 
             if (velocityLin.y < -1 && this.impulseDown) {
                 this.impulseDown = false;
             }
             if (this.inputStates.up && velocityLin.x < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, -speed, 0));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-speed+speed/2, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
 
             }
             if (this.inputStates.down && velocityLin.x > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, speed, 0));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+speed-speed/2, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
             }
             if (this.inputStates.left && velocityLin.z < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(speed, 0, 0, 0));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x+speed-speed/1.5, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
             }
             if (this.inputStates.right && velocityLin.z > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(-speed, 0, 0, 0));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-speed+speed/1.5, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
             }
             if (this.inputStates.space && this.jump) {
@@ -181,6 +183,17 @@ export default class Main {
                         this.key.particles.stop();
                     }
                     if (jeton.physicsImpostor) {
+                        jeton.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(jeton.position.x, jeton.position.y+3,jeton.position.z));
+                        jeton.particles.minSize = 0.25;
+                        jeton.particles.maxSize = 0.55
+
+                        jeton.particles.minLifeTime = 1;
+                        jeton.particles.maxLifeTime = 10;
+                        jeton.particles.updateSpeed = 0.9115;
+                        jeton.particles.start();
+                        setTimeout(function(){
+                            jeton.particles.stop();
+                        }.bind(this), 200);
                         jeton.physicsImpostor.dispose();
                         jeton.dispose();
 
@@ -190,11 +203,14 @@ export default class Main {
                         });
 
                         this.nbrJetonToGenerate -= 1;
+
                     }
                     console.log(this.allJeton,this.nbrJetonToGenerate,essais);
                     this.allJeton=essais; //TODO remplacer ca, je n'arrive pas a changer la valeur de this.allJeton depuis GenerateLevel, ca le change dans le console.log plus haut mais pas la
                     this.affichage.dispose();
                     this.printer.printNumberOfJeton();
+
+
                 }
             ));
         });
@@ -239,18 +255,14 @@ export default class Main {
             this.life[this.nbrLife].dispose();
             this.nbrLife-=1;
             if(this.nbrLife===-1){
-                this.level = 0;
-                this.nbrLife=2;
-                delete this.key;
-                this.access=true;
-                if (this.boule.key)this.boule.key=false;
-                this.affichage.dispose();
+                this.resetGame();
                 return true;
             }
             if (this.floor) {
                 this.affichage.dispose();
                 return true;
             }
+            if(this.nbrLife===0)this.music = new BABYLON.Sound("heartbeat", "sounds/heartbeat.wav", this.scene, null, {loop: true, autoplay: true});
 
         }
         if(this.access){
@@ -258,6 +270,16 @@ export default class Main {
             this.access=false;
         }
 
+    }
+
+    resetGame(){
+        this.music.stop();
+        this.level = 0;
+        this.nbrLife=2;
+        delete this.key;
+        this.access=true;
+        if (this.boule.key)this.boule.key=false;
+        this.affichage.dispose();
     }
 
 

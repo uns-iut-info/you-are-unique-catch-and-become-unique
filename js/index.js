@@ -49,7 +49,6 @@ async function createScene() {
     let scene = new BABYLON.Scene(engine);
     scene.enablePhysics(new BABYLON.Vector3(0, -80, 0));
     createLights(scene);
-    var music = new BABYLON.Sound("music_fond", "sounds/music_fond.wav", scene, null, {loop: true, autoplay: true});
 
     var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 2000.0}, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
