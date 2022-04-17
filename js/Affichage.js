@@ -17,7 +17,7 @@ export default class Affichage{
     printLife() {
         var acc=0;
         for (let i = 1; i < 4; i++) {
-            var image = new BABYLON.GUI.Image("but", "images/ball.png");
+            var image = new BABYLON.GUI.Image("but", "images/ball.jpg");
             image.height = "50px";
             image.width = "50px";
             image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
