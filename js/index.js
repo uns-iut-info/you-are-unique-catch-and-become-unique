@@ -25,6 +25,7 @@ async function startGame() {
     main.createSphere(light1);
     generatorLevel = new GeneratorLevel(obstacle,main)
     scene.activeCamera = createArcCamera(scene, main.boule);
+    main.camera=scene.activeCamera;
     main.level=0;
 
     engine.runRenderLoop(() => {

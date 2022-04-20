@@ -1,4 +1,5 @@
 import Affichage from "./Affichage.js";
+import Particles from "./Particles.js";
 
 export default class Main {
     boule;
@@ -18,6 +19,7 @@ export default class Main {
     access=true;
     floorisLava;
     pique=false;
+    camera;
 
 
     constructor(scene, ground, respawnPoint) {
@@ -29,7 +31,7 @@ export default class Main {
         this.respawn = respawnPoint;
         this.printer = new Affichage(this);
         this.music = new BABYLON.Sound("music_fond", "sounds/music_fond.wav", scene, null, {loop: true, autoplay: true});
-
+        this.generatorParticles = new Particles(scene)
     }
 
     castRay(myMesh) {
@@ -101,7 +103,7 @@ export default class Main {
                 boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-speed+speed/1.5, 0, 0, 0));
                 boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
             }
-            if (this.inputStates.space && this.jump) {
+            if (this.inputStates.space && this.jump && velocityLin.y<15) {
                 this.jump = false;
                 boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
 
@@ -183,14 +185,7 @@ export default class Main {
                     }
                     if (jeton.physicsImpostor) {
                         if(jeton !== this.key){
-                            jeton.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(jeton.position.x, jeton.position.y + 3, jeton.position.z));
-                            jeton.particles.minSize = 0.25;
-                            jeton.particles.maxSize = 0.55
-
-                            jeton.particles.minLifeTime = 1;
-                            jeton.particles.maxLifeTime = 10;
-                            jeton.particles.updateSpeed = 0.9115;
-                            jeton.particles.start();
+                            jeton.particles=this.generatorParticles.createParticlesForJeton(jeton.position.x,jeton.position.y+3,jeton.position.z)
                             setTimeout(function () {
                                 jeton.particles.stop();
                             }.bind(this), 200);
@@ -234,7 +229,7 @@ export default class Main {
                     parameter: step
                 },
                 () => {
-                    if (step.physicsImpostor && !this.jump) {
+                    if (step.physicsImpostor && this.inputStates.space) {
                         var music = new BABYLON.Sound("Violons", "sounds/rebond.wav", this.scene, null, {
                             loop: false,
                             autoplay: true

@@ -1,4 +1,5 @@
 import GeneratorToken from "./GeneratorToken.js";
+import Particles from "./Particles.js"
 
 export default class Obstacles {
     scene;
@@ -9,6 +10,7 @@ export default class Obstacles {
         this.nbrJeton = main.nbrJeton;
         this.scene = main.scene;
         this.generatorToken = new GeneratorToken(main);
+        this.generatorParticles = new Particles(this.scene);
 
 
     }
@@ -114,16 +116,7 @@ export default class Obstacles {
         trait2.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 4.5, socle.position.z - 5.7);
         trait1.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 4.5, socle.position.z - 5);
         barre.position = new BABYLON.Vector3(socle.position.x, socle.position.y + 5, socle.position.z - 4);
-
-        cercle.particles = new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(x + 25, y + 14, z + 10));
-        cercle.particles.minSize = 0.25;
-        cercle.particles.maxSize = 0.55
-
-        cercle.particles.minLifeTime = 20;
-        cercle.particles.maxLifeTime = 30;
-
-        cercle.particles.start();
-
+        cercle.particles = this.generatorParticles.createParticlesForKey(x+25,y+14,z+10)
 
         cercle.addChild(barre);
         barre.addChild(trait1);
@@ -223,7 +216,7 @@ export default class Obstacles {
     }
 
     floorIsLava(x, y, z) {
-        this.main.floor = true;
+        this.main.floorisLava = true;
         var acc = 0;
         for (let i = 0; i < 7; i++) {
             acc += 5;
@@ -326,11 +319,6 @@ export default class Obstacles {
             }, this.scene);
             barre[i].rotate(BABYLON.Axis.Z, 3.14);
             step.addChild(barre[i]);
-
-            //barre[i]= (i%3===0 && i<3) ? new BABYLON.Vector3(-3, 2, -3) : new BABYLON.Vector3(3, 2, -3);
-            //barre[i]= (i%3===1 && i<3) ? new BABYLON.Vector3(-3, 2, 0) : new BABYLON.Vector3(3, 2, 0);
-            //barre[i]= (i%3===2 && i<3) ? new BABYLON.Vector3(-3, 2, 3) : new BABYLON.Vector3(3, 2, 3);
-
 
         }
         //TODO factoriser
@@ -456,6 +444,72 @@ export default class Obstacles {
         return manche;
 
     }
+    inverseGravity(x, y, z){
+        let step1=this.createStep(7, 40, x+50, y - 5, z, true);
+        let step2=this.createStep(7, 40, x+125, y - 5, z, true);
+        let plafond=this.createStep(50, 50, x+90, y+90, z, true);
+
+        step1.rotate(BABYLON.Axis.Y, 1.57);
+        step2.rotate(BABYLON.Axis.Y, 1.57);
+        plafond.rotate(BABYLON.Axis.Y, 1.57);
+
+        /*jetonMD.forEach(jeton => {
+            this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                    parameter: jeton
+                },
+                () => {
+                    var physicsEngine = this.scene.getPhysicsEngine();
+                    var gx = physicsEngine.gravity.x;
+                    let gz = physicsEngine.gravity.z;
+                    var gravity;
+                    physicsEngine.setGravity(new BABYLON.Vector3(gx, gravity = jetonMD.indexOf(jeton) === 0 ? 80 : -80,gz));
+                    this.monte=jetonMD.indexOf(jeton) === 0;
+                    if (jeton.physicsImpostor) {
+                        var music = new BABYLON.Sound("Violons", "sounds/coin.wav", this.scene, null, {
+                            loop: false,
+                            autoplay: true
+                        });
+
+                        this.main.nbrJetonToGenerate -= 1;
+                        jeton.physicsImpostor.dispose();
+                        jeton.dispose();
+                        this.main.affichage.dispose();
+                        this.main.printer.printNumberOfJeton();
+                    }
+
+                }));
+        })*/
+
+        var physicsEngine = this.scene.getPhysicsEngine();
+        plafond.move = ()=>{
+            if (this.main.boule.position.x >= x+105 && (this.main.boule.position.z < z+5 && this.main.boule.position.z >z-5)) {
+                physicsEngine.setGravity(new BABYLON.Vector3(physicsEngine.gravity.x, -80,physicsEngine.gravity.z));
+                this.monte=false;
+            }
+            else if(this.main.boule.position.x >= x+62 && (this.main.boule.position.z < z+5 && this.main.boule.position.z >z-5)) {
+                physicsEngine.setGravity(new BABYLON.Vector3(physicsEngine.gravity.x, 80,physicsEngine.gravity.z));
+                this.monte=true;
+            }
+            if (this.monte && this.main.camera.beta!==6.14/3){
+                this.main.camera.beta+=0.02;
+            }
+            else if (this.main.camera.beta>3.14/3){
+                this.main.camera.beta-=0.02;
+            }
+        }
+
+
+        this.main.allObstacles[this.main.ind++]=this.generatorParticles.createParticlesCircle(x+67,y-5,z,false);
+        this.main.allObstacles[this.main.ind++]=this.generatorParticles.createParticlesCircle(x+110,y+85,z,true);
+
+        this.light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, 50, 40), this.scene);
+
+        return plafond;
+
+    }
+
 
 
 
