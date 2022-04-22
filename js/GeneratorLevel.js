@@ -132,6 +132,18 @@ export default class GeneratorLevel{
 
                 break;
             }
+            case 8:
+            {
+                if (this.createNewLevel) {
+                    this.main.collision();
+                    this.createLevel8();
+                    this.main.collision();
+                    this.createNewLevel = false;
+                    //this.main.affichage.dispose();
+                    this.printer.printNumberOfJeton();
+                    this.access=true;
+                }
+            }
 
         }
     }
@@ -277,6 +289,10 @@ export default class GeneratorLevel{
 
     }
 
+    createLevel8(){
+
+    }
+
 
 
     deleteLevel() {
@@ -300,7 +316,9 @@ export default class GeneratorLevel{
         this.obstacle.nbrJeton=5;
         this.main.boule.key=false;
         this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
-        if(this.main.level===2) this.obstacle.light.dispose()
+        if(this.main.level % 8===2 || this.obstacle.light) {
+            this.obstacle.light.dispose()
+        }
 
     }
 
