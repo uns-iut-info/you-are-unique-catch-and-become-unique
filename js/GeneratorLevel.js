@@ -24,8 +24,15 @@ export default class GeneratorLevel{
             this.main.level += 1;
             this.createNewLevel = true;
         }
-        switch (this.main.level % 8) {
+        switch (this.main.level % 9) {
             case 0: {
+                if (this.createNewLevel) {
+                    this.menuLevel();
+                    this.createNewLevel = false;
+                }
+                break;
+            }
+            case 1:{
                 if (this.createNewLevel) {
                     this.createLevel0();
                     this.main.collision();
@@ -35,7 +42,7 @@ export default class GeneratorLevel{
                 }
                 break;
             }
-            case 1: {
+            case 2: {
                 if (this.createNewLevel) {
                     this.createLevel1();
                     this.main.collision();
@@ -45,7 +52,7 @@ export default class GeneratorLevel{
                 }
                 break;
             }
-            case 2:
+            case 3:
             {
                 if (this.createNewLevel) {
                     this.createLevel2();
@@ -61,7 +68,7 @@ export default class GeneratorLevel{
                 break;
 
             }
-            case 3: {
+            case 4: {
                 if (this.createNewLevel) {
                     this.createLevel3();
                     this.main.collision();
@@ -72,7 +79,7 @@ export default class GeneratorLevel{
                 this.main.key.rotate(BABYLON.Axis.Z, 0.02);
                 break;
             }
-            case 4: {
+            case 5: {
                 if (this.createNewLevel) {
                     this.createLevel4();
                     this.main.collision();
@@ -82,7 +89,7 @@ export default class GeneratorLevel{
                 }
                 break;
             }
-            case 5: {
+            case 6: {
                 if (this.createNewLevel) {
                     this.createLevel5();
                     this.main.collision();
@@ -94,7 +101,7 @@ export default class GeneratorLevel{
                 }
                 break;
             }
-            case 6: {
+            case 7: {
                 if (this.createNewLevel) {
                     this.main.floorisLava=false;
                     this.createLevel6();
@@ -109,7 +116,7 @@ export default class GeneratorLevel{
                 }
                 break;
             }
-            case 7: {
+            case 8: {
                 if (this.createNewLevel) {
                     this.main.collision();
                     this.createLevel7();
@@ -132,7 +139,7 @@ export default class GeneratorLevel{
 
                 break;
             }
-            case 8:
+            case 9:
             {
                 if (this.createNewLevel) {
                     this.main.collision();
@@ -148,7 +155,42 @@ export default class GeneratorLevel{
         }
     }
 
+    mySwitch(main){
+        main.nbrJetonToGenerate = 0;
+    }
+    menuLevel(){
+        this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
+        // GUI
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        this.main.nbrJetonToGenerate = 5;
+        var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "START GAME");
+        button1.fontSize = "10%";
+        button1.width = "40%";
+        button1.height = "40%";
+        button1.color = "white";
+        button1.cornerRadius = 20;
+        button1.background = "rgba(0, 0, 0, 0.5)";
+        var obj = this.main;
 
+
+
+        var textblock = new BABYLON.GUI.TextBlock();
+        textblock.text = "ZQSD to move\n" +
+            "SPACEBAR to jump (you have a double jump)\n" +
+            "Grab all the tokens of a level to go to the next one";
+        textblock.fontSize = 24;
+        textblock.top = "25%";
+        textblock.color = "white";
+        textblock.cornerRadius = 20;
+
+        button1.onPointerUpObservable.add(function() {
+            obj.nbrJetonToGenerate = 0;
+            advancedTexture.dispose();
+        });
+        advancedTexture.addControl(textblock);
+        advancedTexture.addControl(button1);
+
+    }
     createLevel0(){
         this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
         this.generatorToken.generateJetons( (this.main.respawn.x+99), (this.main.respawn.x+49),(this.main.respawn.z+99),(this.main.respawn.z+49));
