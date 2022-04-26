@@ -1,6 +1,7 @@
 import Affichage from "./Affichage.js";
 import Particles from "./Particles.js";
 
+
 export default class Main {
     boule;
     key;
@@ -31,7 +32,22 @@ export default class Main {
         this.respawn = respawnPoint;
         this.printer = new Affichage(this);
         this.music = new BABYLON.Sound("music_fond", "sounds/music_fond.wav", scene, null, {loop: true, autoplay: true});
-        this.generatorParticles = new Particles(scene)
+        this.generatorParticles = new Particles(scene);
+    }
+
+    createGround(scene, x, y, z, id) {
+        let ground = BABYLON.Mesh.CreateGround("ground_" + id, 500, 500, 1, scene);
+        ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {
+            mass: 0,
+            restitution: -1
+        }, scene);
+        ground.material = new BABYLON.StandardMaterial("groundMaterial" + id, scene);
+        //ground.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg", scene);
+        ground.checkCollisions = true;
+        ground.position = new BABYLON.Vector3(x, y, z);
+        ground.wireframe = true;
+        ground.material.alpha = 0;
+        return ground;
     }
 
     castRay(myMesh) {
@@ -242,8 +258,8 @@ export default class Main {
 
     }
 
-    events() {
-        if (this.boule.intersectsMesh(this.ground, true) || this.pique ) {
+    events(ground) {
+        if (this.boule.intersectsMesh(ground, true) || this.pique ) {
             this.pique=false;
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
@@ -260,6 +276,10 @@ export default class Main {
             if (this.floorisLava) {// si c'est le niveau floorIsLava on doit regenerer le niveau completement
                 this.affichage.dispose();
                 return true;
+            }
+            if(this.level%8===2){
+                this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
+                return false;
             }
 
         }
@@ -278,7 +298,10 @@ export default class Main {
         this.access=true;
         if (this.boule.key)this.boule.key=false;
         this.affichage.dispose();
+
     }
+
+
 
 
 }

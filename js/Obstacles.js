@@ -1,6 +1,7 @@
 import GeneratorToken from "./GeneratorToken.js";
 import Particles from "./Particles.js"
 
+
 export default class Obstacles {
     scene;
     main;
@@ -11,6 +12,7 @@ export default class Obstacles {
         this.scene = main.scene;
         this.generatorToken = new GeneratorToken(main);
         this.generatorParticles = new Particles(this.scene);
+
 
 
     }
@@ -453,35 +455,8 @@ export default class Obstacles {
         step2.rotate(BABYLON.Axis.Y, 1.57);
         plafond.rotate(BABYLON.Axis.Y, 1.57);
 
-        /*jetonMD.forEach(jeton => {
-            this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-                {
-                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
-                    parameter: jeton
-                },
-                () => {
-                    var physicsEngine = this.scene.getPhysicsEngine();
-                    var gx = physicsEngine.gravity.x;
-                    let gz = physicsEngine.gravity.z;
-                    var gravity;
-                    physicsEngine.setGravity(new BABYLON.Vector3(gx, gravity = jetonMD.indexOf(jeton) === 0 ? 80 : -80,gz));
-                    this.monte=jetonMD.indexOf(jeton) === 0;
-                    if (jeton.physicsImpostor) {
-                        var music = new BABYLON.Sound("Violons", "sounds/coin.wav", this.scene, null, {
-                            loop: false,
-                            autoplay: true
-                        });
 
-                        this.main.nbrJetonToGenerate -= 1;
-                        jeton.physicsImpostor.dispose();
-                        jeton.dispose();
-                        this.main.affichage.dispose();
-                        this.main.printer.printNumberOfJeton();
-                    }
-
-                }));
-        })*/
-
+        this.groundPlafond = this.main.createGround(this.main.scene,x+90,y+120,z,"2")
         var physicsEngine = this.scene.getPhysicsEngine();
         plafond.move = ()=>{
             if (this.main.boule.position.x >= x+105 && (this.main.boule.position.z < z+5 && this.main.boule.position.z >z-5)) {
@@ -498,6 +473,22 @@ export default class Obstacles {
             else if (this.main.camera.beta>3.14/3){
                 this.main.camera.beta-=0.02;
             }
+            let retourneCamera=this.main.events(this.groundPlafond)
+
+            if(retourneCamera===false) {
+                this.monte=false
+                physicsEngine.setGravity(new BABYLON.Vector3(physicsEngine.gravity.x, -80,physicsEngine.gravity.z));
+                this.main.camera.beta=3.14/3;
+
+            }
+            else if (retourneCamera===true){
+                this.monte=false;
+                physicsEngine.setGravity(new BABYLON.Vector3(physicsEngine.gravity.x, -80,physicsEngine.gravity.z));
+                this.main.camera.beta=3.14/3;
+                this.main.generatorLevel.createNewLevel=retourneCamera;
+                this.main.generatorLevel.deleteLevel();
+            }
+
         }
 
 
