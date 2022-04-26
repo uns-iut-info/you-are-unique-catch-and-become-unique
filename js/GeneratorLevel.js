@@ -146,7 +146,7 @@ export default class GeneratorLevel{
                     this.createLevel8();
                     this.main.collision();
                     this.createNewLevel = false;
-                    //this.main.affichage.dispose();
+                    this.main.affichage.dispose();
                     this.printer.printNumberOfJeton();
                     this.access=true;
                 }
@@ -360,6 +360,8 @@ export default class GeneratorLevel{
         this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
         if(this.main.level % 8===2 || this.obstacle.light) {
             this.obstacle.light.dispose()
+            this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
+            this.main.camera.beta=3.14/3;
         }
 
     }

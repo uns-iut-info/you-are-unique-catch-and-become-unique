@@ -8,7 +8,6 @@ window.onload = startGame;
 let ground;
 let main;
 let obstacle;
-let generatorLevel;
 let light1;
 
 
@@ -23,21 +22,22 @@ async function startGame() {
     obstacle = new Obstacles(main);
     main.modifySettings(window);
     main.createSphere(light1);
-    generatorLevel = new GeneratorLevel(obstacle,main)
+    main.generatorLevel = new GeneratorLevel(obstacle,main)
     scene.activeCamera = createArcCamera(scene, main.boule);
     main.camera=scene.activeCamera;
     main.level=0;
 
     engine.runRenderLoop(() => {
-        let reLoadLevel = main.events(false);
+        let reLoadLevel = main.events(ground);
         main.boule.move();
         scene.activeCamera.move();
         scene.render();
         if(reLoadLevel){
-            generatorLevel.createNewLevel=reLoadLevel;
-            generatorLevel.deleteLevel();
+            main.generatorLevel.createNewLevel=reLoadLevel;
+            main.generatorLevel.deleteLevel();
+
         }
-        generatorLevel.generateLevel();
+        main.generatorLevel.generateLevel();
     });
 }
 
@@ -51,6 +51,8 @@ async function createScene() {
     createLights(scene);
 
     var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 2000.0}, scene);
+    //skybox.scaling.y=0.25;
+    //skybox.position.y-=50;
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("images/skybox/skybox", scene);
