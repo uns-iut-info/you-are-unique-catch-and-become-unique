@@ -487,6 +487,7 @@ export default class Obstacles {
                 this.main.camera.beta=3.14/3;
                 this.main.generatorLevel.createNewLevel=retourneCamera;
                 this.main.generatorLevel.deleteLevel();
+                this.groundPlafond.dispose();
             }
 
         }
@@ -498,6 +499,41 @@ export default class Obstacles {
         this.light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, 50, 40), this.scene);
 
         return plafond;
+
+    }
+
+    ascenseur(x,y,z){
+        let ascenseur=this.createStep(20, 20, x, y , z, true);
+        if (!this.main.boule.actionManager)this.main.boule.actionManager = new BABYLON.ActionManager(this.scene);
+        this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+            {
+                trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                parameter: ascenseur
+            },
+            () => {
+                ascenseur.monte=true;
+            }));
+        ascenseur.move = () => {
+            if (ascenseur.monte && ascenseur.position.y<70){
+                ascenseur.position.y+=0.4;
+            }
+            else{
+                ascenseur.monte=false;
+            }
+        }
+        return ascenseur;
+    }
+
+    stepIncline(x,y,z){
+        let allStep=[];
+        for (let i = 0; i < 4; i++) {
+            let acc = i*20;
+            let rotation=0;
+            allStep[i]=this.createStep(20, 10, x+acc, y-acc , i%2===0 ? z-20 : z+20, true);
+            allStep[i].rotate(BABYLON.Axis.X, rotation= i%2===0 ? 0.5 : -0.5);
+            allStep[i].rotate(BABYLON.Axis.Y, rotation= i%2===0 ? -0.6: 0.6);
+            allStep[i].rotate(BABYLON.Axis.Z, 0.1);
+        }
 
     }
 

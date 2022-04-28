@@ -35,6 +35,10 @@ export default class Main {
         this.generatorParticles = new Particles(scene);
     }
 
+    setNbrJeton(nbr){
+        this.allJeton=nbr;
+    }
+
     createGround(scene, x, y, z, id) {
         let ground = BABYLON.Mesh.CreateGround("ground_" + id, 500, 500, 1, scene);
         ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {
@@ -126,6 +130,7 @@ export default class Main {
             }
             this.ground.position.x = boule.position.x;
             this.ground.position.z = boule.position.z;
+
         };
 
         this.boule = boule;
@@ -187,7 +192,7 @@ export default class Main {
     collision() {
         console.log(this.allJeton,this.nbrJetonToGenerate);
         var essais = this.allJeton;
-        this.boule.actionManager = new BABYLON.ActionManager(this.scene);
+        if (!this.boule.actionManager)this.boule.actionManager = new BABYLON.ActionManager(this.scene);
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
@@ -218,7 +223,6 @@ export default class Main {
 
                     }
                     console.log(this.allJeton,this.nbrJetonToGenerate,essais);
-                    this.allJeton=essais; //TODO remplacer ca, je n'arrive pas a changer la valeur de this.allJeton depuis GenerateLevel, ca le change dans le console.log plus haut mais pas la
                     this.affichage.dispose();
                     this.printer.printNumberOfJeton();
 
@@ -281,6 +285,12 @@ export default class Main {
                 this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
                 return false;
             }
+            if (this.level % 9===8) {
+                this.generatorLevel.ascenseur.position.y=this.respawn.y - 5;
+                this.generatorLevel.ascenseur.monte=false;
+            }
+
+
 
         }
         if(this.access){
