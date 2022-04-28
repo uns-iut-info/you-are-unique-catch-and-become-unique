@@ -521,6 +521,7 @@ export default class Obstacles {
                 ascenseur.monte=false;
             }
         }
+
         return ascenseur;
     }
 
@@ -533,6 +534,8 @@ export default class Obstacles {
             allStep[i].rotate(BABYLON.Axis.X, rotation= i%2===0 ? 0.5 : -0.5);
             allStep[i].rotate(BABYLON.Axis.Y, rotation= i%2===0 ? -0.6: 0.6);
             allStep[i].rotate(BABYLON.Axis.Z, 0.1);
+            let jeton = this.generatorToken.createJeton(this.nbrJeton, x+acc, y-acc+3, i%2===0 ? z-20 : z+20);
+            this.nbrJeton -= 1;
         }
 
     }

@@ -144,7 +144,7 @@ export default class GeneratorLevel{
                     this.createLevel8();
                     this.main.collision();
                     this.createNewLevel = false;
-                    this.main.affichage.dispose();
+                    //this.main.affichage.dispose();
                     this.printer.printNumberOfJeton();
                     this.access=true;
                 }
@@ -347,10 +347,11 @@ export default class GeneratorLevel{
         step2.rotate(BABYLON.Axis.Y, this.rotation);
 
         this.obstacle.stepIncline(this.main.respawn.x+260,this.main.respawn.y +65,this.main.respawn.z)
-        //this.obstacle.stepIncline(this.main.respawn.x,this.main.respawn.y,this.main.respawn.z-15)
 
         let step3 = this.obstacle.createStep(10, 80, this.main.respawn.x+390, this.main.respawn.y -5, this.main.respawn.z, true);
         step3.rotate(BABYLON.Axis.Y, this.rotation);
+        let jeton = this.generatorToken.createJeton(this.obstacle.nbrJeton, this.main.respawn.x+390, this.main.respawn.y -2, this.main.respawn.z);
+        this.obstacle.nbrJeton -= 1;
 
     }
 
