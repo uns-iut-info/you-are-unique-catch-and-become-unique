@@ -144,7 +144,7 @@ export default class GeneratorLevel{
                     this.createLevel8();
                     this.main.collision();
                     this.createNewLevel = false;
-                    //this.main.affichage.dispose();
+                    this.main.affichage.dispose();
                     this.printer.printNumberOfJeton();
                     this.access=true;
                 }
