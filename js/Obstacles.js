@@ -491,12 +491,8 @@ export default class Obstacles {
             }
 
         }
-
-
         this.main.allObstacles[this.main.ind++]=this.generatorParticles.createParticlesCircle(x+67,y-5,z,false);
         this.main.allObstacles[this.main.ind++]=this.generatorParticles.createParticlesCircle(x+110,y+85,z,true);
-
-        this.light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, 50, 40), this.scene);
 
         return plafond;
 
@@ -534,7 +530,7 @@ export default class Obstacles {
             allStep[i].rotate(BABYLON.Axis.X, rotation= i%2===0 ? 0.5 : -0.5);
             allStep[i].rotate(BABYLON.Axis.Y, rotation= i%2===0 ? -0.6: 0.6);
             allStep[i].rotate(BABYLON.Axis.Z, 0.1);
-            let jeton = this.generatorToken.createJeton(this.nbrJeton, x+acc, y-acc+3, i%2===0 ? z-20 : z+20);
+            this.generatorToken.createJeton(this.nbrJeton, x+acc, y-acc+3, i%2===0 ? z-20 : z+20);
             this.nbrJeton -= 1;
         }
 

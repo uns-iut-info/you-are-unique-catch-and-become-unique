@@ -8,7 +8,7 @@ window.onload = startGame;
 let ground;
 let main;
 let obstacle;
-let light1;
+let light;
 
 
 async function startGame() {
@@ -18,10 +18,12 @@ async function startGame() {
 
     scene.jetons = [];
     let ground = createGround(scene, 0, -10, 0, 1);
+
     main = new Main(scene, ground, {x: 0, y: 10, z: 0});
     obstacle = new Obstacles(main);
     main.modifySettings(window);
-    main.createSphere(light1);
+    main.createSphere(light);
+    main.light=light
     main.generatorLevel = new GeneratorLevel(obstacle,main)
     scene.activeCamera = createArcCamera(scene, main.boule);
     main.camera=scene.activeCamera;
@@ -84,7 +86,8 @@ function createGround(scene, x, y, z, id) {
 }
 
 function createLights(scene) {
-    light1 = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(1, -2, 1), scene);
+    light = new BABYLON.PointLight("light", new BABYLON.Vector3(-20, 70, 0), scene);
+    light.intensity = 1;
 }
 
 

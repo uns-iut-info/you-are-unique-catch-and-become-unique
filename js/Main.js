@@ -130,6 +130,8 @@ export default class Main {
             }
             this.ground.position.x = boule.position.x;
             this.ground.position.z = boule.position.z;
+            this.light.position.x = boule.position.x-20;
+            this.light.position.z = boule.position.z;
 
         };
 

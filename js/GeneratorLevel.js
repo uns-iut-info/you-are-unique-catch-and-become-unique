@@ -350,7 +350,7 @@ export default class GeneratorLevel{
 
         let step3 = this.obstacle.createStep(10, 80, this.main.respawn.x+390, this.main.respawn.y -5, this.main.respawn.z, true);
         step3.rotate(BABYLON.Axis.Y, this.rotation);
-        let jeton = this.generatorToken.createJeton(this.obstacle.nbrJeton, this.main.respawn.x+390, this.main.respawn.y -2, this.main.respawn.z);
+        this.generatorToken.createJeton(this.obstacle.nbrJeton, this.main.respawn.x+390, this.main.respawn.y -2, this.main.respawn.z);
         this.obstacle.nbrJeton -= 1;
 
     }
@@ -378,9 +378,7 @@ export default class GeneratorLevel{
         this.obstacle.nbrJeton=5;
         this.main.boule.key=false;
         this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
-        console.log(this.main.level % 9===2)
         if(this.main.level % 9===2 || this.obstacle.light) {
-            this.obstacle.light.dispose()
             this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
             this.main.camera.beta=3.14/3;
             this.obstacle.groundPlafond.dispose();
