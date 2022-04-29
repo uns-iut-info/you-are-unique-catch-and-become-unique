@@ -194,10 +194,11 @@ export default class Obstacles {
         toit.material.alpha = 0;
         let jeton = this.generatorToken.createJeton(this.nbrJeton, x, y + 2, z);
         this.nbrJeton -= 1;
-        this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+        jeton.actionManager = new BABYLON.ActionManager(this.scene);
+        jeton.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {
                 trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
-                parameter: jeton
+                parameter: this.main.boule
             },
             () => {
                 if (jeton.physicsImpostor) {
@@ -210,8 +211,7 @@ export default class Obstacles {
                     });
                 }
 
-            }
-        ));
+            }));
 
 
         this.createPanneau(toit, 0, 10, 0, "Invisible\n House", "there is a breach in the house where you can pass and get the token")
@@ -231,14 +231,16 @@ export default class Obstacles {
             step.disparait = () => {
                 step.dispose();
             }
-            this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+            step.actionManager = new BABYLON.ActionManager(this.scene);
+            step.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
                 {
                     trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
-                    parameter: step
+                    parameter: this.main.boule
                 },
                 () => {
                     setTimeout(step.modifyMass, 2000);
                     setTimeout(step.disparait, 5000);
+
                 }));
         }
 

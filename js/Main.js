@@ -35,10 +35,6 @@ export default class Main {
         this.generatorParticles = new Particles(scene);
     }
 
-    setNbrJeton(nbr){
-        this.allJeton=nbr;
-    }
-
     createGround(scene, x, y, z, id) {
         let ground = BABYLON.Mesh.CreateGround("ground_" + id, 500, 500, 1, scene);
         ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {
@@ -132,6 +128,8 @@ export default class Main {
             this.ground.position.z = boule.position.z;
             this.light.position.x = boule.position.x-20;
             this.light.position.z = boule.position.z;
+            if(this.level%9===8)this.light.position.y = boule.position.y+70;
+
 
         };
 
@@ -192,8 +190,6 @@ export default class Main {
     }
 
     collision() {
-        console.log(this.allJeton,this.nbrJetonToGenerate);
-        var essais = this.allJeton;
         if (!this.boule.actionManager)this.boule.actionManager = new BABYLON.ActionManager(this.scene);
         this.scene.jetons.forEach(jeton => {
             this.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
@@ -224,7 +220,6 @@ export default class Main {
                         this.nbrJetonToGenerate -= 1;
 
                     }
-                    console.log(this.allJeton,this.nbrJetonToGenerate,essais);
                     this.affichage.dispose();
                     this.printer.printNumberOfJeton();
 
@@ -270,8 +265,10 @@ export default class Main {
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
             this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
+            console.log(this.life,this.nbrLife);
             this.life[this.nbrLife].dispose();
             this.nbrLife-=1;
+            console.log(this.life,this.nbrLife);
             if(this.nbrLife===0){
                 var gameover = new BABYLON.Sound("gameover", "sounds/game_over.wav", this.scene, null, {loop: false, autoplay: true});
                 this.resetGame();
