@@ -280,7 +280,7 @@ export default class Main {
                 this.affichage.dispose();
                 return true;
             }
-            if(this.level%8===2){
+            if(this.level%9===3){
                 this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
                 return false;
             }

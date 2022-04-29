@@ -52,8 +52,6 @@ export default class GeneratorLevel{
                     this.createLevel2();
                     this.initialisation();
                 }
-                this.changeGravity.move();
-
                 break;
 
             }
@@ -62,7 +60,7 @@ export default class GeneratorLevel{
                     this.createLevel3();
                     this.initialisation()
                 }
-                this.main.key.rotate(BABYLON.Axis.Z, 0.02);
+                this.changeGravity.move();
                 break;
             }
             case 4: {
@@ -70,6 +68,7 @@ export default class GeneratorLevel{
                     this.createLevel4();
                     this.initialisation();
                 }
+                this.main.key.rotate(BABYLON.Axis.Z, 0.02);
                 break;
             }
             case 5: {
@@ -194,34 +193,7 @@ export default class GeneratorLevel{
 
 
     }
-    createLevel2(){
-        this.main.allJeton=5;
-        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
-        this.changeGravity = this.obstacle.inverseGravity(this.main.respawn.x,this.main.respawn.y - 5,this.main.respawn.z);
-        for (let i = 0; i < 4; i++) {
-            var xpos =i%2===0 ? 10*i : -10;
-            var zpos=i%2===0 ? (5*i) : -(5*i);
-            this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+90+xpos,this.main.respawn.y+80,this.main.respawn.z+zpos,true);
-            this.nbrJeton-=1;
-        }
-        this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+144,this.main.respawn.y-3,this.main.respawn.z,true);
-        this.nbrJeton-=1;
-
-    }
-
-    createLevel3() {
-        this.main.allJeton=4;
-        this.main.nbrJetonToGenerate = 4;
-        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true)
-        this.obstacle.stepByStep(30, 0);
-        this.obstacle.poutre(140, 0);
-        this.obstacle.createStep(100, 5, 320, 10, -10,true);
-        this.obstacle.createStep(100, 100, 435, 10, 0);
-        this.obstacle.coffreFort(469, 12, 20);
-        this.obstacle.createKey(277, 8, 10);
-
-    }
-    createLevel4() {
+    createLevel2() {
         this.main.allJeton=5;
         this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
 
@@ -251,6 +223,41 @@ export default class GeneratorLevel{
 
 
     }
+    createLevel3(){
+        this.main.allJeton=5;
+        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
+        this.changeGravity = this.obstacle.inverseGravity(this.main.respawn.x,this.main.respawn.y - 5,this.main.respawn.z);
+        for (let i = 0; i < 4; i++) {
+            var xpos =i%2===0 ? 10*i : -10;
+            var zpos=i%2===0 ? (5*i) : -(5*i);
+            this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+90+xpos,this.main.respawn.y+80,this.main.respawn.z+zpos,true);
+            this.nbrJeton-=1;
+        }
+        this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+144,this.main.respawn.y-3,this.main.respawn.z,true);
+        this.nbrJeton-=1;
+
+    }
+
+    createLevel4() {
+        this.main.allJeton=4;
+        this.main.nbrJetonToGenerate = 4;
+        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true)
+        this.obstacle.stepByStep(30, 0);
+
+        this.obstacle.createStep(10, 10, 110, 10, -25,true);
+        this.obstacle.createStep(10, 10, 120, 10, -50,true);
+        this.generatorToken.createLife(120,15,-50)
+        this.obstacle.createStep(10, 10, 130, 10, -25,true);
+
+
+        this.obstacle.poutre(140, 0);
+        this.obstacle.createStep(100, 5, 320, 10, -10,true);
+        this.obstacle.createStep(100, 100, 435, 10, 0);
+        this.obstacle.coffreFort(469, 12, 20);
+        this.obstacle.createKey(277, 8, 10);
+
+    }
+
 
     createLevel5(){
         this.main.allJeton=1;
@@ -357,7 +364,7 @@ export default class GeneratorLevel{
         this.obstacle.nbrJeton=5;
         this.main.boule.key=false;
         this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
-        if(this.main.level % 9===2 || this.obstacle.light) {
+        if(this.main.level % 9===3 || this.obstacle.light) {
             this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
             this.main.camera.beta=3.14/3;
             this.obstacle.groundPlafond.dispose();

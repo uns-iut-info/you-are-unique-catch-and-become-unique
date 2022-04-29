@@ -223,7 +223,7 @@ export default class Obstacles {
         for (let i = 0; i < 7; i++) {
             acc += 5;
             var pos = (i % 2) === 0 ? 7 : -7;
-            let step = this.createStep(15, 15, x + (acc * 3), y + acc, z + pos, false);
+            let step = this.createStep(15, 15, x + (acc * 3), y + acc, z + pos, true);
             step.modifyMass = () => {
                 step.physicsImpostor.mass = 0.1;
 
@@ -502,6 +502,7 @@ export default class Obstacles {
 
     ascenseur(x,y,z){
         let ascenseur=this.createStep(20, 20, x, y , z, true);
+        this.generatorToken.createLife(x,y+5,z);
         if (!this.main.boule.actionManager)this.main.boule.actionManager = new BABYLON.ActionManager(this.scene);
         this.main.boule.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {

@@ -7,9 +7,9 @@ export default class Affichage{
         var text1 = new BABYLON.GUI.TextBlock();
         text1.text = `${this.main.allJeton - this.main.nbrJetonToGenerate}/${this.main.allJeton} token`;
         text1.color = "white";
-        text1.fontSize = 24;
-        text1.top = "-280px";
-        text1.left = "500px";
+        text1.fontSize = 26;
+        text1.top = -320;
+        text1.left = 600;
         this.main.affichage = text1;
         this.main.scene.advancedTexture.addControl(text1);
     }
