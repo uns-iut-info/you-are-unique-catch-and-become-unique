@@ -274,6 +274,7 @@ export default class Main {
                 this.resetGame();
                 return true;
             }
+            var looseLife = new BABYLON.Sound("looseLife", "sounds/looseLife.wav", this.scene, null, {loop: false, autoplay: true});
             if(this.nbrLife===1)this.music = new BABYLON.Sound("heartbeat", "sounds/heartbeat.wav", this.scene, null, {loop: true, autoplay: true});
 
             if (this.floorisLava) {// si c'est le niveau floorIsLava on doit regenerer le niveau completement

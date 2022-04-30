@@ -56,10 +56,12 @@ export default class GeneratorToken{
                 parameter: this.main.boule
             },
             () => {
+                if (this.main.nbrLife===1)this.main.music.stop();
                 this.main.nbrLife+=1;
                 this.main.printer.printLife();
                 boule.physicsImpostor.dispose();
                 boule.dispose();
+                var life = new BABYLON.Sound("life_up", "sounds/life.wav", this.scene, null, {loop: false, autoplay: true});
 
 
             }));
