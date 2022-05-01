@@ -1,5 +1,6 @@
 import GeneratorToken from "./GeneratorToken.js";
 import Particles from "./Particles.js"
+import Boss from "./Boss.js";
 
 
 export default class Obstacles {
@@ -537,6 +538,12 @@ export default class Obstacles {
             this.nbrJeton -= 1;
         }
 
+    }
+
+    duelFinal(){
+        this.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
+        this.boss = new Boss(this.main);
+        this.bossBoule = this.boss.createBoss(this.main.boule);
     }
 
 

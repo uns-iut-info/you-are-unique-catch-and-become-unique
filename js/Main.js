@@ -12,6 +12,7 @@ export default class Main {
     jump = true;
     impulseDown = false;
     level = 0;
+    nbrLevel=11;
     move = false;
     faille;
     affichage;
@@ -61,7 +62,7 @@ export default class Main {
         }
     }
 
-    createSphere(light) {
+    createSphere() {
         let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, this.scene);
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
@@ -70,17 +71,18 @@ export default class Main {
             this.castRay(boule);
         })
 
-        let speed = 2;
+
+        boule.speed=2;
         boule.applyGravity = true;
         boule.material = new BABYLON.StandardMaterial("s-mat", this.scene);
         boule.material.diffuseTexture = new BABYLON.Texture("images/lightning.jpg", this.scene);
         boule.material.emissiveColor = new BABYLON.Color3.Red;
         boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
         boule.material.diffuseTexture.uScale *= 4;
-        var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+        var shadowGenerator = new BABYLON.ShadowGenerator(1024, this.light);
         shadowGenerator.addShadowCaster(boule);
         shadowGenerator.useExponentialShadowMap = true;
-        var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, light);
+        var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, this.light);
         shadowGenerator2.addShadowCaster(boule);
         shadowGenerator2.usePoissonSampling = true;
         shadowGenerator.getShadowMap().renderList.push(boule);
@@ -103,21 +105,21 @@ export default class Main {
                 this.impulseDown = false;
             }
             if (this.inputStates.up && velocityLin.x < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-speed+speed/1.5, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + speed, velocityLin.y, velocityLin.z));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-this.boule.speed+this.boule.speed/1.5, 0));
+                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + this.boule.speed, velocityLin.y, velocityLin.z));
 
             }
             if (this.inputStates.down && velocityLin.x > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+speed-speed/1.5, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - speed, velocityLin.y, velocityLin.z));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+this.boule.speed-this.boule.speed/1.5, 0));
+                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - this.boule.speed, velocityLin.y, velocityLin.z));
             }
             if (this.inputStates.left && velocityLin.z < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x+speed-speed/1.5, 0, 0, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + speed));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x+this.boule.speed-this.boule.speed/1.5, 0, 0, 0));
+                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + this.boule.speed));
             }
             if (this.inputStates.right && velocityLin.z > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-speed+speed/1.5, 0, 0, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - speed));
+                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-this.boule.speed+this.boule.speed/1.5, 0, 0, 0));
+                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - this.boule.speed));
             }
             if (this.inputStates.space && this.jump && velocityLin.y<15) {
                 this.jump = false;
@@ -133,10 +135,8 @@ export default class Main {
 
         };
 
-        this.boule = boule;
 
-
-        return this.boule;
+        return boule;
     }
 
     modifySettings(window) {
@@ -281,11 +281,11 @@ export default class Main {
                 this.affichage.dispose();
                 return true;
             }
-            if(this.level%9===3){
+            if(this.level%this.nbrLevel===3){
                 this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
                 return false;
             }
-            if (this.level % 9===8) {
+            if (this.level % this.nbrLevel===8) {
                 this.generatorLevel.ascenseur.position.y=this.respawn.y - 5;
                 this.generatorLevel.ascenseur.monte=false;
             }

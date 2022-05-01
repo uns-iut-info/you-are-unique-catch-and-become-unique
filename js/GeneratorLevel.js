@@ -1,5 +1,6 @@
 import Affichage from "./Affichage.js";
 import GeneratorToken from "./GeneratorToken.js";
+import Genie from "./Genie.js";
 
 export default class GeneratorLevel{
     main;
@@ -24,7 +25,7 @@ export default class GeneratorLevel{
             this.main.level += 1;
             this.createNewLevel = true;
         }
-        switch (this.main.level % 9) {
+        switch (this.main.level % this.main.nbrLevel) {
             case -1: {
                 if (this.createNewLevel) {
                     this.menuLevel();
@@ -104,8 +105,6 @@ export default class GeneratorLevel{
                     }
                 }
                 this.manche.move();
-
-
                 break;
             }
             case 8:
@@ -115,7 +114,23 @@ export default class GeneratorLevel{
                     this.initialisation();
                 }
 
-                this.ascenseur.move()
+                this.ascenseur.move();
+                break;
+            }
+            case 9: {
+                if (this.createNewLevel) {
+                    this.createLevel9();
+                    this.initialisation();
+                }
+                break;
+            }
+            case 10: {
+                if (this.createNewLevel) {
+                    this.createLevel10();
+                    this.initialisation();
+                }
+                this.obstacle.boss.attaque(this.main.boule,this.obstacle.bossBoule);
+                break;
             }
 
         }
@@ -341,6 +356,19 @@ export default class GeneratorLevel{
 
     }
 
+    createLevel9(){
+        this.main.allJeton=5;
+        this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
+        let genie = new Genie(this.main);
+        genie.createGenie(this.main.respawn.x+60,this.main.respawn.y,this.main.respawn.z);
+        let step1 = this.obstacle.createStep(10, 50, this.main.respawn.x+50, this.main.respawn.y - 5, this.main.respawn.z, true);
+        step1.rotate(BABYLON.Axis.Y, this.rotation);
+    }
+
+    createLevel10(){
+        this.obstacle.duelFinal();
+    }
+
 
 
     deleteLevel() {
@@ -364,7 +392,7 @@ export default class GeneratorLevel{
         this.obstacle.nbrJeton=5;
         this.main.boule.key=false;
         this.main.boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z)
-        if(this.main.level % 9===3 || this.obstacle.light) {
+        if(this.main.level % this.main.nbrLevel===3 || this.obstacle.light) {
             this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80,this.scene.getPhysicsEngine().gravity.z));
             this.main.camera.beta=3.14/3;
             this.obstacle.groundPlafond.dispose();

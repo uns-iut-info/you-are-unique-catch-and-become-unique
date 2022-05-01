@@ -22,12 +22,13 @@ async function startGame() {
     main = new Main(scene, ground, {x: 0, y: 10, z: 0});
     obstacle = new Obstacles(main);
     main.modifySettings(window);
-    main.createSphere(light);
     main.light=light
+    main.boule = main.createSphere();
+
     main.generatorLevel = new GeneratorLevel(obstacle,main)
     scene.activeCamera = createArcCamera(scene, main.boule);
     main.camera=scene.activeCamera;
-    main.level=-1;
+    main.level=9;
 
     engine.runRenderLoop(() => {
         let reLoadLevel = main.events(ground);
