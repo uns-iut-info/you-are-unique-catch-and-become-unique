@@ -102,7 +102,7 @@ export default class Main {
 
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
             let angularVel = boule.physicsImpostor.getAngularVelocity();
-            if(this.generatorLevel.canMove){
+            if(this.canMove){
 
 
                 if (velocityLin.y < -1 && this.impulseDown) {
@@ -134,7 +134,7 @@ export default class Main {
                 this.ground.position.z = boule.position.z;
                 this.light.position.x = boule.position.x-20;
                 this.light.position.z = boule.position.z;
-                if(this.level%9===8)this.light.position.y = boule.position.y+70;
+                if(this.level%this.nbrLevel===8)this.light.position.y = boule.position.y+70;
             }
 
         };
@@ -281,8 +281,8 @@ export default class Main {
             var looseLife = new BABYLON.Sound("looseLife", "sounds/looseLife.wav", this.scene, null, {loop: false, autoplay: true});
             if(this.nbrLife===1)this.music = new BABYLON.Sound("heartbeat", "sounds/heartbeat.wav", this.scene, null, {loop: true, autoplay: true});
 
-            if (this.floorisLava) {// si c'est le niveau floorIsLava on doit regenerer le niveau completement
-                this.affichage.dispose();
+            if (this.floorisLava || this.level%this.nbrLevel===10) {// si c'est le niveau floorIsLava on doit regenerer le niveau completement
+                if(this.affichage)this.affichage.dispose();
                 return true;
             }
             if(this.level%this.nbrLevel===3){

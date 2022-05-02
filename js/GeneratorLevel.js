@@ -1,6 +1,7 @@
 import Affichage from "./Affichage.js";
 import GeneratorToken from "./GeneratorToken.js";
 import Genie from "./Genie.js";
+import Menu from "./Menu.js";
 
 export default class GeneratorLevel{
     main;
@@ -16,7 +17,7 @@ export default class GeneratorLevel{
         this.nbrJeton = main.nbrJeton;
         this.printer = new Affichage(main);
         this.generatorToken = new GeneratorToken(main);
-        this.canMove = true;
+        this.generatorMenu = new Menu(this.main,this.obstacle);
     }
 
 
@@ -29,8 +30,8 @@ export default class GeneratorLevel{
         switch (this.main.level % this.main.nbrLevel) {
             case -1: {
                 if (this.createNewLevel) {
-                    this.canMove = false;
-                    this.menuLevel();
+                    this.main.canMove = false;
+                    this.generatorMenu.menuLevel();
                     this.createNewLevel = false;
                 }
                 break;
@@ -142,97 +143,10 @@ export default class GeneratorLevel{
         this.main.collision();
         this.createNewLevel = false;
         if(this.main.affichage)this.main.affichage.dispose();
-        this.printer.printNumberOfJeton();
+        if(this.main.level % this.main.nbrLevel!== 10) this.printer.printNumberOfJeton();
         this.access=true;
     }
 
-    genButtonStart(advancedTexture){
-        let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "START GAME");
-        button1.fontSize = "5%";
-        button1.top = "-10%";
-        button1.width = "30%";
-        button1.height = "10%";
-        button1.color = "white";
-        button1.cornerRadius = 20;
-        button1.background = "rgba(0, 0, 0, 0.5)";
-        let obj = this;
-        button1.onPointerUpObservable.add(function() {
-            obj.main.nbrJetonToGenerate = 0;
-            advancedTexture.dispose();
-            obj.canMove = true;
-        });
-        return button1;
-    }
-
-    genButtonHelp(btnStart,advancedTexture){
-        let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "HELP");
-        button1.fontSize = "5%";
-        button1.top = "1%";
-        button1.width = "30%";
-        button1.height = "10%";
-        button1.color = "white";
-        button1.cornerRadius = 20;
-        button1.background = "rgba(0, 0, 0, 0.5)";
-        let main = this;
-        button1.onPointerUpObservable.add(function() {
-            button1.dispose();
-            btnStart.dispose();
-            main.genTextHelp(advancedTexture);
-        });
-        return button1;
-    }
-    genTextHelp(advancedTexture){
-        let textblock = new BABYLON.GUI.TextBlock();
-        textblock.text = "ZQSD to move\n" +
-            "SPACEBAR to jump\n" +
-            "Grab all the blue tokens of a level to go to the next one";
-        textblock.fontSize = "3%";
-        textblock.top = "0";
-        textblock.color = "white";
-        textblock.cornerRadius = 20;
-
-        let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "RETURN");
-        button1.fontSize = "2%";
-        button1.top = "10%";
-        button1.left = "-10%";
-        button1.width = "10%";
-        button1.height = "5%";
-        button1.color = "white";
-        button1.cornerRadius = 20;
-        button1.background = "rgba(0, 0, 0, 0.5)";
-        let main = this;
-        button1.onPointerUpObservable.add(function() {
-            button1.dispose();
-            textblock.dispose();
-            let buttonStart = main.genButtonStart(advancedTexture);
-            advancedTexture.addControl(buttonStart);
-            advancedTexture.addControl(main.genButtonHelp(buttonStart,advancedTexture));
-        });
-
-        advancedTexture.addControl(textblock);
-        advancedTexture.addControl(button1)
-    }
-    menuLevel(){
-        this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
-        // GUI
-        let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        this.main.nbrJetonToGenerate = 5;
-        let button1 = this.genButtonStart(advancedTexture);
-        let buttonHlp = this.genButtonHelp(button1,advancedTexture);
-
-
-
-        var rectangle = new BABYLON.GUI.Rectangle("rect");
-        rectangle.background = "black";
-        rectangle.color = "yellow";
-        rectangle.width = "40%";
-        rectangle.height = "40%";
-
-        advancedTexture.addControl(rectangle);
-        advancedTexture.addControl(buttonHlp);
-        advancedTexture.addControl(button1);
-
-    }
     createLevel0(){
         this.main.allJeton=5;
         this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
@@ -420,6 +334,7 @@ export default class GeneratorLevel{
 
     createLevel10(){
         this.obstacle.duelFinal();
+        this.obstacle.boss.detectWin();
     }
 
 
