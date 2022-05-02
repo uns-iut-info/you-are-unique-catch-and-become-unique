@@ -43,13 +43,27 @@ export default class Menu{
     }
     genTextHelp(advancedTexture){
         let textblock = new BABYLON.GUI.TextBlock();
-        textblock.text = "ZQSD to move\n" +
-            "SPACEBAR to jump\n" +
+        textblock.text = " to move\n\n" +
+            " to jump\n\n" +
             "Grab all the blue tokens of a level to go to the next one";
         textblock.fontSize = "3%";
-        textblock.top = "0";
-        textblock.color = "white";
+        textblock.top = "-3%";
+        textblock.color = "black";
+        textblock.fontWeight = "bold";
         textblock.cornerRadius = 20;
+
+        let zqsdKey = new BABYLON.GUI.Image("name", "images/keyzqsd.png");
+        zqsdKey.width = "10%";
+        zqsdKey.height = "10%";
+        zqsdKey.top = "-11%";
+        zqsdKey.left = "-9%";
+
+        let spacebarKey = new BABYLON.GUI.Image("name", "images/spacebar.png");
+        spacebarKey.width = "7%";
+        spacebarKey.height = "5%";
+        spacebarKey.left = "-9%";
+        spacebarKey.top = "-3%";
+
 
         let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "RETURN");
         button1.fontSize = "2%";
@@ -64,12 +78,17 @@ export default class Menu{
         button1.onPointerUpObservable.add(function() {
             button1.dispose();
             textblock.dispose();
+            spacebarKey.dispose();
+            zqsdKey.dispose();
+
             let buttonStart = main.genButtonStart(advancedTexture);
             advancedTexture.addControl(buttonStart);
             advancedTexture.addControl(main.genButtonHelp(buttonStart,advancedTexture));
         });
 
         advancedTexture.addControl(textblock);
+        advancedTexture.addControl(spacebarKey);
+        advancedTexture.addControl(zqsdKey);
         advancedTexture.addControl(button1)
     }
     menuLevel(){
@@ -82,14 +101,21 @@ export default class Menu{
 
 
 
-        var rectangle = new BABYLON.GUI.Rectangle("rect");
-        rectangle.background = "black";
-        rectangle.color = "yellow";
-        rectangle.width = "40%";
-        rectangle.height = "40%";
+        let rectangle = new BABYLON.GUI.Image("name", "images/background.jpg");
+        rectangle.width = "45%";
+        rectangle.height = "50%";
         rectangle.cornerRadius = 20;
 
+        let myText =  new BABYLON.GUI.TextBlock();
+        myText.text = "Overcome all obstacles to find your double\n and beat him to become unique";
+        myText.fontSize = "3%";
+        myText.top = "-18%";
+        myText.color = "black";
+        myText.fontWeight = "bold";
+
         advancedTexture.addControl(rectangle);
+        advancedTexture.addControl(myText);
+
         advancedTexture.addControl(buttonHlp);
         advancedTexture.addControl(button1);
 
