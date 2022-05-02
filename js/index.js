@@ -18,17 +18,16 @@ async function startGame() {
 
     scene.jetons = [];
     let ground = createGround(scene, 0, -10, 0, 1);
-
     main = new Main(scene, ground, {x: 0, y: 10, z: 0});
     obstacle = new Obstacles(main);
     main.modifySettings(window);
-    main.light=light
+    main.light=light;
     main.boule = main.createSphere();
 
-    main.generatorLevel = new GeneratorLevel(obstacle,main)
+    main.generatorLevel = new GeneratorLevel(obstacle,main);
     scene.activeCamera = createArcCamera(scene, main.boule);
     main.camera=scene.activeCamera;
-    main.level=9;
+    main.level=-1;
 
     engine.runRenderLoop(() => {
         let reLoadLevel = main.events(ground);

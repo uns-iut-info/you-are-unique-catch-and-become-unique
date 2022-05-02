@@ -55,10 +55,12 @@ export default class Main {
         var ray = new BABYLON.Ray(myMesh.position, new BABYLON.Vector3(0, -1, 0), 4);
         let hit = this.scene.pickWithRay(ray, (mesh) => {
             return (mesh !== myMesh);
-        })
+        });
         if (hit.pickedMesh) {
             this.jump = true;
             this.impulseDown = true;
+        }else{
+            this.jump = false;
         }
     }
 
@@ -69,7 +71,7 @@ export default class Main {
         boule.checkCollisions = true;
         this.scene.registerBeforeRender(() => {
             this.castRay(boule);
-        })
+        });
 
 
         boule.speed=2;
@@ -100,38 +102,40 @@ export default class Main {
 
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
             let angularVel = boule.physicsImpostor.getAngularVelocity();
+            if(this.generatorLevel.canMove){
 
-            if (velocityLin.y < -1 && this.impulseDown) {
-                this.impulseDown = false;
-            }
-            if (this.inputStates.up && velocityLin.x < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-this.boule.speed+this.boule.speed/1.5, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + this.boule.speed, velocityLin.y, velocityLin.z));
 
-            }
-            if (this.inputStates.down && velocityLin.x > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+this.boule.speed-this.boule.speed/1.5, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - this.boule.speed, velocityLin.y, velocityLin.z));
-            }
-            if (this.inputStates.left && velocityLin.z < 30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x+this.boule.speed-this.boule.speed/1.5, 0, 0, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + this.boule.speed));
-            }
-            if (this.inputStates.right && velocityLin.z > -30) {
-                boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-this.boule.speed+this.boule.speed/1.5, 0, 0, 0));
-                boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - this.boule.speed));
-            }
-            if (this.inputStates.space && this.jump && velocityLin.y<15) {
-                this.jump = false;
-                boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
+                if (velocityLin.y < -1 && this.impulseDown) {
+                    this.impulseDown = false;
+                }
+                if (this.inputStates.up && velocityLin.x < 30) {
+                    boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-this.boule.speed+this.boule.speed/1.5, 0));
+                    boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + this.boule.speed, velocityLin.y, velocityLin.z));
 
-            }
-            this.ground.position.x = boule.position.x;
-            this.ground.position.z = boule.position.z;
-            this.light.position.x = boule.position.x-20;
-            this.light.position.z = boule.position.z;
-            if(this.level%9===8)this.light.position.y = boule.position.y+70;
+                }
+                if (this.inputStates.down && velocityLin.x > -30) {
+                    boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+this.boule.speed-this.boule.speed/1.5, 0));
+                    boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - this.boule.speed, velocityLin.y, velocityLin.z));
+                }
+                if (this.inputStates.left && velocityLin.z < 30) {
+                    boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x+this.boule.speed-this.boule.speed/1.5, 0, 0, 0));
+                    boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + this.boule.speed));
+                }
+                if (this.inputStates.right && velocityLin.z > -30) {
+                    boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-this.boule.speed+this.boule.speed/1.5, 0, 0, 0));
+                    boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - this.boule.speed));
+                }
+                if (this.inputStates.space && this.jump && velocityLin.y<15) {
+                    this.jump = false;
+                    boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
 
+                }
+                this.ground.position.x = boule.position.x;
+                this.ground.position.z = boule.position.z;
+                this.light.position.x = boule.position.x-20;
+                this.light.position.z = boule.position.z;
+                if(this.level%9===8)this.light.position.y = boule.position.y+70;
+            }
 
         };
 

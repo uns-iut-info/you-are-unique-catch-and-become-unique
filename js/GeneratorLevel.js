@@ -16,6 +16,7 @@ export default class GeneratorLevel{
         this.nbrJeton = main.nbrJeton;
         this.printer = new Affichage(main);
         this.generatorToken = new GeneratorToken(main);
+        this.canMove = true;
     }
 
 
@@ -28,6 +29,7 @@ export default class GeneratorLevel{
         switch (this.main.level % this.main.nbrLevel) {
             case -1: {
                 if (this.createNewLevel) {
+                    this.canMove = false;
                     this.menuLevel();
                     this.createNewLevel = false;
                 }
@@ -144,39 +146,90 @@ export default class GeneratorLevel{
         this.access=true;
     }
 
-    mySwitch(main){
-        main.nbrJetonToGenerate = 0;
+    genButtonStart(advancedTexture){
+        let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "START GAME");
+        button1.fontSize = "5%";
+        button1.top = "-10%";
+        button1.width = "30%";
+        button1.height = "10%";
+        button1.color = "white";
+        button1.cornerRadius = 20;
+        button1.background = "rgba(0, 0, 0, 0.5)";
+        let obj = this;
+        button1.onPointerUpObservable.add(function() {
+            obj.main.nbrJetonToGenerate = 0;
+            advancedTexture.dispose();
+            obj.canMove = true;
+        });
+        return button1;
+    }
+
+    genButtonHelp(btnStart,advancedTexture){
+        let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "HELP");
+        button1.fontSize = "5%";
+        button1.top = "1%";
+        button1.width = "30%";
+        button1.height = "10%";
+        button1.color = "white";
+        button1.cornerRadius = 20;
+        button1.background = "rgba(0, 0, 0, 0.5)";
+        let main = this;
+        button1.onPointerUpObservable.add(function() {
+            button1.dispose();
+            btnStart.dispose();
+            main.genTextHelp(advancedTexture);
+        });
+        return button1;
+    }
+    genTextHelp(advancedTexture){
+        let textblock = new BABYLON.GUI.TextBlock();
+        textblock.text = "ZQSD to move\n" +
+            "SPACEBAR to jump\n" +
+            "Grab all the blue tokens of a level to go to the next one";
+        textblock.fontSize = "3%";
+        textblock.top = "0";
+        textblock.color = "white";
+        textblock.cornerRadius = 20;
+
+        let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "RETURN");
+        button1.fontSize = "2%";
+        button1.top = "10%";
+        button1.left = "-10%";
+        button1.width = "10%";
+        button1.height = "5%";
+        button1.color = "white";
+        button1.cornerRadius = 20;
+        button1.background = "rgba(0, 0, 0, 0.5)";
+        let main = this;
+        button1.onPointerUpObservable.add(function() {
+            button1.dispose();
+            textblock.dispose();
+            let buttonStart = main.genButtonStart(advancedTexture);
+            advancedTexture.addControl(buttonStart);
+            advancedTexture.addControl(main.genButtonHelp(buttonStart,advancedTexture));
+        });
+
+        advancedTexture.addControl(textblock);
+        advancedTexture.addControl(button1)
     }
     menuLevel(){
         this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
         // GUI
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         this.main.nbrJetonToGenerate = 5;
-        var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "START GAME");
-        button1.fontSize = "10%";
-        button1.width = "40%";
-        button1.height = "40%";
-        button1.color = "white";
-        button1.cornerRadius = 20;
-        button1.background = "rgba(0, 0, 0, 0.5)";
-        var obj = this.main;
+        let button1 = this.genButtonStart(advancedTexture);
+        let buttonHlp = this.genButtonHelp(button1,advancedTexture);
 
 
 
-        var textblock = new BABYLON.GUI.TextBlock();
-        textblock.text = "ZQSD to move\n" +
-            "SPACEBAR to jump (you have a double jump)\n" +
-            "Grab all the tokens of a level to go to the next one";
-        textblock.fontSize = 24;
-        textblock.top = "25%";
-        textblock.color = "white";
-        textblock.cornerRadius = 20;
+        var rectangle = new BABYLON.GUI.Rectangle("rect");
+        rectangle.background = "black";
+        rectangle.color = "yellow";
+        rectangle.width = "40%";
+        rectangle.height = "40%";
 
-        button1.onPointerUpObservable.add(function() {
-            obj.nbrJetonToGenerate = 0;
-            advancedTexture.dispose();
-        });
-        advancedTexture.addControl(textblock);
+        advancedTexture.addControl(rectangle);
+        advancedTexture.addControl(buttonHlp);
         advancedTexture.addControl(button1);
 
     }
