@@ -25,14 +25,14 @@ async function startGame() {
     main.boule = main.createSphere();
 
     main.generatorLevel = new GeneratorLevel(obstacle,main);
-    scene.activeCamera = createArcCamera(scene, main.boule);
+    scene.activeCamera = main.createArcCamera(scene, main.boule);
     main.camera=scene.activeCamera;
-    main.level=-1;
+    main.level=5;
 
     engine.runRenderLoop(() => {
         let reLoadLevel = main.events(ground);
         main.boule.move();
-        scene.activeCamera.move();
+       // scene.activeCamera.move();
         scene.render();
         if(reLoadLevel){
             main.generatorLevel.createNewLevel=reLoadLevel;
@@ -91,11 +91,3 @@ function createLights(scene) {
 }
 
 
-function createArcCamera(scene, target) {
-    var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 80, target, scene);
-    camera.alpha = -3.14;
-    camera.beta = 3.14 / 3;
-    camera.move = () => {
-    }
-    return camera;
-}

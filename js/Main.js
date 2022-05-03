@@ -36,6 +36,24 @@ export default class Main {
         this.generatorParticles = new Particles(scene);
     }
 
+    createArcCamera(scene, target) {
+        var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 80, target, scene);
+        camera.alpha = -3.14;
+        camera.beta = 3.14 / 3;
+        camera.move = () => {
+            camera.alpha+=0.02;
+            this.lightForMove.position=camera.position;
+        }
+        return camera;
+    }
+
+    createMoveCamera(middle){
+        this.cameraToMove = this.createArcCamera(this.scene,new BABYLON.Vector3(middle,0,0));
+        this.lightForMove = new BABYLON.PointLight("light", new BABYLON.Vector3(middle, 70, 0), this.scene);
+        this.lightForMove.intensity=0.5;
+        this.cameraToMove.radius=this.radius;
+    }
+
     createGround(scene, x, y, z, id) {
         let ground = BABYLON.Mesh.CreateGround("ground_" + id, 500, 500, 1, scene);
         ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {
@@ -43,7 +61,6 @@ export default class Main {
             restitution: -1
         }, scene);
         ground.material = new BABYLON.StandardMaterial("groundMaterial" + id, scene);
-        //ground.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg", scene);
         ground.checkCollisions = true;
         ground.position = new BABYLON.Vector3(x, y, z);
         ground.wireframe = true;
@@ -130,6 +147,19 @@ export default class Main {
                     boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
 
                 }
+                if (this.inputStates.p){
+
+                    if(this.cameraToMove) {
+                        this.cameraToMove.move();
+                    }
+                    else {
+                        console.log(this.middle)
+                        this.createMoveCamera(this.middle);
+                    }
+                    this.scene.activeCamera=this.cameraToMove;
+
+
+                }
                 this.ground.position.x = boule.position.x;
                 this.ground.position.z = boule.position.z;
                 this.light.position.x = boule.position.x-20;
@@ -162,7 +192,10 @@ export default class Main {
                 this.inputStates.down = true;
             } else if (event.key === " ") {
                 this.inputStates.space = true;
+            }else if (event.key === "p") {
+                this.inputStates.p = true;
             }
+
         }, false);
 
         //if the key will be released, change the states object
@@ -177,6 +210,11 @@ export default class Main {
                 this.inputStates.down = false;
             } else if (event.key === " ") {
                 this.inputStates.space = false;
+            }else if (event.key === "p") {
+                this.inputStates.p = false;
+                this.cameraToMove=undefined;
+                //this.lightForMove.dispose();
+                this.scene.activeCamera=this.camera;
             }
         }, false);
     }

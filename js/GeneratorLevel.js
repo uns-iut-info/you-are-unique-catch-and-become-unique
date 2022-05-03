@@ -149,6 +149,8 @@ export default class GeneratorLevel{
 
     async createLevel0() {
         this.main.allJeton = 5;
+        this.main.radius=200;
+        this.main.middle=0;
         this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
         this.generatorToken.generateJetons((this.main.respawn.x + 99), (this.main.respawn.x + 49), (this.main.respawn.z + 99), (this.main.respawn.z + 49));
     }
@@ -161,7 +163,8 @@ export default class GeneratorLevel{
         this.obstacle.createStep(12, 12, this.main.respawn.x+90, this.main.respawn.y - 5, this.main.respawn.z, true)
         this.obstacle.createStep(100, 5, this.main.respawn.x+165, this.main.respawn.y-5, this.main.respawn.z,true);
         this.obstacle.createStep(10, 10, this.main.respawn.x+240, this.main.respawn.y - 5, this.main.respawn.z, true)
-
+        this.main.radius=300;
+        this.main.middle=110;
         this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+30,this.main.respawn.y - 2,this.main.respawn.z);
         this.nbrJeton-=1;
         this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+60,this.main.respawn.y - 2,this.main.respawn.z);
@@ -202,6 +205,8 @@ export default class GeneratorLevel{
         this.obstacle.createStep(100, 5, this.main.respawn.x+280, this.main.respawn.y-5.1, this.main.respawn.z+87.5,true);
         this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+330,this.main.respawn.y-2,this.main.respawn.z+87.5);
         this.nbrJeton-=1;
+        this.main.radius=400;
+        this.main.middle=165;
 
 
     }
@@ -217,6 +222,8 @@ export default class GeneratorLevel{
         }
         this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+144,this.main.respawn.y-3,this.main.respawn.z,true);
         this.nbrJeton-=1;
+        this.main.radius=300;
+        this.main.middle=65;
 
     }
 
@@ -237,6 +244,8 @@ export default class GeneratorLevel{
         this.obstacle.createStep(100, 100, 435, 10, 0);
         this.obstacle.coffreFort(469, 12, 20);
         this.obstacle.createKey(277, 8, 10);
+        this.main.radius=500;
+        this.main.middle=245;
 
     }
 
@@ -248,6 +257,8 @@ export default class GeneratorLevel{
         this.obstacle.createInvisibleHouse(210, 32, 0);
         this.obstacle.createStep(10, 10, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
         this.obstacle.createStep(100, 100, 195, 30, 0, true);
+        this.main.radius=300;
+        this.main.middle=122;
     }
 
     createLevel6(){
@@ -268,6 +279,8 @@ export default class GeneratorLevel{
         for (let i = 0; i < this.poutres.length; i++) {
             this.main.allObstacles[this.main.ind++] = this.poutres[i];
         }
+        this.main.radius=300;
+        this.main.middle=145;
     }
 
     createLevel7(){
@@ -299,6 +312,8 @@ export default class GeneratorLevel{
         this.nbrJeton-=1;
         this.generatorToken.createJeton(this.nbrJeton,this.main.respawn.x+225,this.main.respawn.y-3,this.main.respawn.z);
         this.nbrJeton-=1;
+        this.main.radius=300;
+        this.main.middle=115;
 
     }
 
@@ -320,6 +335,8 @@ export default class GeneratorLevel{
         step3.rotate(BABYLON.Axis.Y, this.rotation);
         this.generatorToken.createJeton(this.obstacle.nbrJeton, this.main.respawn.x+390, this.main.respawn.y -2, this.main.respawn.z);
         this.obstacle.nbrJeton -= 1;
+        this.main.radius=500;
+        this.main.middle=200;
 
     }
 
@@ -330,11 +347,15 @@ export default class GeneratorLevel{
         genie.createGenie(this.main.respawn.x+60,this.main.respawn.y,this.main.respawn.z);
         let step1 = this.obstacle.createStep(10, 50, this.main.respawn.x+50, this.main.respawn.y - 5, this.main.respawn.z, true);
         step1.rotate(BABYLON.Axis.Y, this.rotation);
+        this.main.radius=150;
+        this.main.middle=50;
     }
 
     createLevel10(){
         this.obstacle.duelFinal();
         this.obstacle.boss.detectWin();
+        this.main.radius=200;
+        this.main.middle=0;
     }
 
 
