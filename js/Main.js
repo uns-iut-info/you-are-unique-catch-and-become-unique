@@ -213,7 +213,7 @@ export default class Main {
             }else if (event.key === "p") {
                 this.inputStates.p = false;
                 this.cameraToMove=undefined;
-                //this.lightForMove.dispose();
+                this.lightForMove.dispose();
                 this.scene.activeCamera=this.camera;
             }
         }, false);

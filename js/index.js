@@ -27,12 +27,11 @@ async function startGame() {
     main.generatorLevel = new GeneratorLevel(obstacle,main);
     scene.activeCamera = main.createArcCamera(scene, main.boule);
     main.camera=scene.activeCamera;
-    main.level=5;
+    main.level=-1;
 
     engine.runRenderLoop(() => {
         let reLoadLevel = main.events(ground);
         main.boule.move();
-       // scene.activeCamera.move();
         scene.render();
         if(reLoadLevel){
             main.generatorLevel.createNewLevel=reLoadLevel;

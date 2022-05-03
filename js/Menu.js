@@ -43,11 +43,11 @@ export default class Menu{
     }
     genTextHelp(advancedTexture){
         let textblock = new BABYLON.GUI.TextBlock();
-        textblock.text = " to move\n\n" +
-            " to jump\n\n" +
+        textblock.text = "to move\n\n\n" +
+            "to jump\n\n\n" +
             "Grab all the blue tokens of a level to go to the next one";
         textblock.fontSize = "3%";
-        textblock.top = "-3%";
+
         textblock.color = "black";
         textblock.fontWeight = "bold";
         textblock.cornerRadius = 20;
@@ -55,20 +55,19 @@ export default class Menu{
         let zqsdKey = new BABYLON.GUI.Image("name", "images/keyzqsd.png");
         zqsdKey.width = "10%";
         zqsdKey.height = "10%";
-        zqsdKey.top = "-11%";
+        zqsdKey.top = "-10%";
         zqsdKey.left = "-9%";
 
         let spacebarKey = new BABYLON.GUI.Image("name", "images/spacebar.png");
         spacebarKey.width = "7%";
         spacebarKey.height = "5%";
         spacebarKey.left = "-9%";
-        spacebarKey.top = "-3%";
+
 
 
         let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "RETURN");
         button1.fontSize = "2%";
-        button1.top = "10%";
-        button1.left = "-10%";
+        button1.top = "17%";
         button1.width = "10%";
         button1.height = "5%";
         button1.color = "white";
