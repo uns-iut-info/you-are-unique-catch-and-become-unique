@@ -5,7 +5,7 @@ export default class Boss{
     }
 
     createBoss(){
-        let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 7}, this.scene);
+        let boule = new BABYLON.MeshBuilder.CreateSphere("heroboule", {diameter: 10}, this.scene);
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(this.main.respawn.x, this.main.respawn.y, this.main.respawn.z);
         boule.checkCollisions = true;
@@ -25,7 +25,7 @@ export default class Boss{
         shadowGenerator.getShadowMap().renderList.push(boule);
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
-            mass: 2,
+            mass: 3,
             restitution: 0,
             friction: 0.0
         }, this.scene);
@@ -33,6 +33,7 @@ export default class Boss{
         boule.physicsImpostor.physicsBody.angularDamping = .8;
         this.boule=boule;
         this.boule.position = new BABYLON.Vector3(this.main.respawn.x+47, this.main.respawn.y, this.main.respawn.z);
+        this.main.allObstacles[this.main.ind++] = boule;
         return this.boule;
 
     }
@@ -56,11 +57,11 @@ export default class Boss{
     attaqueZ(b1,b2){
         let velocityLin = b2.physicsImpostor.getLinearVelocity();
         let angularVel = b2.physicsImpostor.getAngularVelocity();
-        if (b2.position.z >= b1.position.z && b2.position.z>=-42) {
+        if (b2.position.z >= b1.position.z && b2.position.z>=-40) {
             b2.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x-b2.speed+b2.speed/1.5, 0, 0, 0));
             b2.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - b2.speed));
         }
-        if (b2.position.z < b1.position.z && b2.position.z<=42) {
+        if (b2.position.z < b1.position.z && b2.position.z<=40) {
             b2.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x+b2.speed-b2.speed/1.5, 0, 0, 0));
             b2.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + b2.speed));
         }
@@ -69,11 +70,11 @@ export default class Boss{
     attaqueX(b1,b2){
         let velocityLin = b2.physicsImpostor.getLinearVelocity();
         let angularVel = b2.physicsImpostor.getAngularVelocity();
-        if (b2.position.x >= b1.position.x && b2.position.x>=-42) {
+        if (b2.position.x >= b1.position.x && b2.position.x>=-43) {
             b2.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0,angularVel.z+b2.speed-b2.speed/1.5, 0));
             b2.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - b2.speed, velocityLin.y, velocityLin.z));
         }
-        if (b2.position.x < b1.position.x && b2.position.x<=42) {
+        if (b2.position.x < b1.position.x && b2.position.x<=43) {
             b2.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z-b2.speed+b2.speed/1.5, 0));
             b2.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + b2.speed, velocityLin.y, velocityLin.z));
         }

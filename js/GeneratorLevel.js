@@ -147,10 +147,10 @@ export default class GeneratorLevel{
         this.access=true;
     }
 
-    createLevel0(){
-        this.main.allJeton=5;
-        this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
-        this.generatorToken.generateJetons( (this.main.respawn.x+99), (this.main.respawn.x+49),(this.main.respawn.z+99),(this.main.respawn.z+49));
+    async createLevel0() {
+        this.main.allJeton = 5;
+        this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z, true);
+        this.generatorToken.generateJetons((this.main.respawn.x + 99), (this.main.respawn.x + 49), (this.main.respawn.z + 99), (this.main.respawn.z + 49));
     }
 
     createLevel1(){

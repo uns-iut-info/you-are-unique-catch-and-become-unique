@@ -181,17 +181,7 @@ export default class Main {
         }, false);
     }
 
-    createShadow(ground) {
-        let mirrorMaterial = new BABYLON.StandardMaterial("mirrorMaterial", this.scene);
 
-        mirrorMaterial.specularColor = new BABYLON.Color3.Black;
-        mirrorMaterial.reflectionTexture = new BABYLON.MirrorTexture("mirror", 1024, this.scene, true);
-        mirrorMaterial.reflectionTexture.mirrorPlane = new BABYLON.Plane(0, -0.1, 0, -0.1);
-        mirrorMaterial.reflectionTexture.level = 1; // between 0 and 1
-        ground.material = mirrorMaterial;
-        mirrorMaterial.reflectionTexture.renderList.push(this.boule);
-        return mirrorMaterial;
-    }
 
     collision() {
         if (!this.boule.actionManager)this.boule.actionManager = new BABYLON.ActionManager(this.scene);
@@ -311,7 +301,7 @@ export default class Main {
         delete this.key;
         this.access=true;
         if (this.boule.key)this.boule.key=false;
-        this.affichage.dispose();
+        if (this.affichage)this.affichage.dispose();
 
     }
 

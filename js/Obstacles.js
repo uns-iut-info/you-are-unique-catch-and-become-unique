@@ -24,7 +24,7 @@ export default class Obstacles {
             width: w,
             height: 2,
             restitution: 0,
-        }, this.scene);
+        }, this.scene,false);
         step.physicsImpostor = new BABYLON.PhysicsImpostor(step, BABYLON.PhysicsImpostor.BoxImpostor, {
             mass: 0,
             restitution: 0,
@@ -32,6 +32,9 @@ export default class Obstacles {
             friction: 0.1,
         }, this.scene);
         step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
+        /*var grid = BABYLON.GridMaterial("grid", this.scene);
+        step.material = grid;*/
+
         step.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg");
         step.checkCollisions = true;
         step.position = new BABYLON.Vector3(x, y, z);
