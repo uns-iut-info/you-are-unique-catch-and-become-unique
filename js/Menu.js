@@ -24,7 +24,7 @@ export default class Menu{
         return button1;
     }
 
-    genButtonHelp(btnStart,advancedTexture){
+    genButtonHelp(btnStart,advancedTexture,myText){
         let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "HELP");
         button1.fontSize = "5%";
         button1.top = "8%";
@@ -37,11 +37,19 @@ export default class Menu{
         button1.onPointerUpObservable.add(function() {
             button1.dispose();
             btnStart.dispose();
-            main.genTextHelp(advancedTexture);
+            myText.dispose();
+            main.genTextHelp(advancedTexture,myText);
         });
         return button1;
     }
-    genTextHelp(advancedTexture){
+    genTextHelp(advancedTexture,text){
+        let myText =  new BABYLON.GUI.TextBlock();
+        myText.text = "Overcome all obstacles to find your double\n and beat him to become unique";
+
+        myText.fontSize = "3%";
+        myText.top = "-18%";
+        myText.color = "black";
+        myText.fontWeight = "bold";
         let textblock = new BABYLON.GUI.TextBlock();
         textblock.text = "to move\n\n\n" +
             "to jump\n\n\n" +
@@ -79,12 +87,13 @@ export default class Menu{
             textblock.dispose();
             spacebarKey.dispose();
             zqsdKey.dispose();
-
+            myText.dispose();
+            advancedTexture.addControl(text);
             let buttonStart = main.genButtonStart(advancedTexture);
             advancedTexture.addControl(buttonStart);
-            advancedTexture.addControl(main.genButtonHelp(buttonStart,advancedTexture));
+            advancedTexture.addControl(main.genButtonHelp(buttonStart,advancedTexture,text));
         });
-
+        advancedTexture.addControl(myText);
         advancedTexture.addControl(textblock);
         advancedTexture.addControl(spacebarKey);
         advancedTexture.addControl(zqsdKey);
@@ -95,8 +104,9 @@ export default class Menu{
         // GUI
         let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         this.main.nbrJetonToGenerate = 5;
+        let myText =  new BABYLON.GUI.TextBlock();
         let button1 = this.genButtonStart(advancedTexture);
-        let buttonHlp = this.genButtonHelp(button1,advancedTexture);
+        let buttonHlp = this.genButtonHelp(button1,advancedTexture,myText);
 
 
 
@@ -105,10 +115,11 @@ export default class Menu{
         rectangle.height = "50%";
         rectangle.cornerRadius = 20;
 
-        let myText =  new BABYLON.GUI.TextBlock();
-        myText.text = "Overcome all obstacles to find your double\n and beat him to become unique";
-        myText.fontSize = "3%";
-        myText.top = "-18%";
+
+        myText.text = "Catch and Become Unique";
+
+        myText.fontSize = "5%";
+        myText.top = "-20%";
         myText.color = "black";
         myText.fontWeight = "bold";
 
