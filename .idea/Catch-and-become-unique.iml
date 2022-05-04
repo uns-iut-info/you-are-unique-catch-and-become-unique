@@ -13,5 +13,7 @@
     <orderEntry type="library" name="babylon.lavaMaterial" level="application" />
     <orderEntry type="library" name="dat-gui" level="application" />
     <orderEntry type="library" name="babylon.max" level="application" />
+    <orderEntry type="library" name="babylonjs.materials" level="application" />
+    <orderEntry type="library" name="babylonjs.proceduralTextures" level="application" />
   </component>
 </module>

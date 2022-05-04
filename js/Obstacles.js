@@ -18,33 +18,49 @@ export default class Obstacles {
 
     }
 
-    createStep(w, s, x, y, z, sound) {
+    createStep(w, s, x, y, z, sound,texture) {
         let step = new BABYLON.MeshBuilder.CreateBox("step_", {
             size: s,
             width: w,
             height: 2,
             restitution: 0,
-        }, this.scene,false);
+        }, this.scene, false);
         step.physicsImpostor = new BABYLON.PhysicsImpostor(step, BABYLON.PhysicsImpostor.BoxImpostor, {
             mass: 0,
             restitution: 0,
             gravity: 18,
             friction: 0.1,
         }, this.scene);
-        step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
-        /*var grid = BABYLON.GridMaterial("grid", this.scene);
-        step.material = grid;*/
+        /*var grid = new BABYLON.GridMaterial("grid", this.scene);
+        grid.gridRatio = 5;
+        grid.majorUnitFrequency = 10;
+        grid.mainColor = new BABYLON.Color3(1, 1, 1);
+        grid.lineColor = new BABYLON.Color3(0.0, 1.0, 0.0);
+        step.material = grid;
+        step.receiveShadows = true;*/
 
-        step.material.diffuseTexture = new BABYLON.Texture("images/diffuse.jpg");
+        step.material = new BABYLON.StandardMaterial("stepMaterial", this.scene);
+        step.receiveShadows = true;
+        step.material.diffuseTexture = texture ? new BABYLON.Texture(texture) : new BABYLON.Texture("images/asteroid.jpg");
         step.checkCollisions = true;
         step.position = new BABYLON.Vector3(x, y, z);
         if (sound) {
             this.main.allStep[this.main.ind] = step;
             this.main.ind += 1;
         }
-        step.receiveShadows = true;
+
         this.main.allObstacles[this.main.ind++] = step;
+        var shadowGenerator = new BABYLON.ShadowGenerator(1024, this.main.light);
+        shadowGenerator.addShadowCaster(this.main.boule);
+        shadowGenerator.useExponentialShadowMap = true;
         return step;
+    }
+
+    createMontagne(){
+        const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("gdhm", "images/heightMap.png", {width:505, height :505, subdivisions: 500, maxHeight: 60});
+        ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.MeshImpostor, {mass: 0, friction: 0, restitution: 0.3});
+        ground.checkCollisions = true;
+        ground.position=new BABYLON.Vector3(50,0,0);
     }
 
     stepByStep(x, z) {
@@ -227,7 +243,7 @@ export default class Obstacles {
         for (let i = 0; i < 7; i++) {
             acc += 5;
             var pos = (i % 2) === 0 ? 7 : -7;
-            let step = this.createStep(15, 15, x + (acc * 3), y + acc, z + pos, true);
+            let step = this.createStep(15, 15, x + (acc * 3), y + acc, z + pos, true,"images/magma.jpeg");
             step.modifyMass = () => {
                 step.physicsImpostor.mass = 0.1;
 
@@ -242,6 +258,10 @@ export default class Obstacles {
                     parameter: this.main.boule
                 },
                 () => {
+                    var music = new BABYLON.Sound("Violons", "sounds/grill.mp3", this.scene, null, {
+                        loop: false,
+                        autoplay: true
+                    });
                     setTimeout(step.modifyMass, 2000);
                     setTimeout(step.disparait, 5000);
 
@@ -272,7 +292,7 @@ export default class Obstacles {
 
         return button1;
     }
-    
+
     createRondin(x,y,z){
         let poutres=[];
         poutres[0] = BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 80, diameterTop: 50, diameterBottom: 50});
@@ -312,7 +332,7 @@ export default class Obstacles {
     }
 
     createPique(x, y, z,descendFirst) {
-        let step = this.createStep(10, 10, x, y, z, false);
+        let step = this.createStep(10, 10, x, y, z, false,"images/magma.jpeg");
         step.monte = !descendFirst;
         var barre = [];
         for (let i = 0; i < 6; i++) {
@@ -326,6 +346,8 @@ export default class Obstacles {
                 restitution: 0
             }, this.scene);
             barre[i].rotate(BABYLON.Axis.Z, 3.14);
+            barre[i].material = new BABYLON.StandardMaterial("pique", this.scene);
+            barre[i].material.diffuseTexture = new BABYLON.Texture("images/lava.jpg");
             step.addChild(barre[i]);
 
         }
@@ -427,6 +449,13 @@ export default class Obstacles {
 
         piqueG.rotate(BABYLON.Axis.X, 1.57);
         piqueD.rotate(BABYLON.Axis.X, -1.57);
+
+        manche.material = new BABYLON.StandardMaterial("pique", this.scene);
+        manche.material.diffuseTexture = new BABYLON.Texture("images/lava2.png");
+        piqueG.material = new BABYLON.StandardMaterial("pique", this.scene);
+        piqueG.material.diffuseTexture = new BABYLON.Texture("images/lava2.png");
+        piqueD.material = new BABYLON.StandardMaterial("pique", this.scene);
+        piqueD.material.diffuseTexture = new BABYLON.Texture("images/lava2.png");
 
         manche.addChild(piqueG);
         manche.addChild(piqueD);

@@ -94,17 +94,11 @@ export default class Main {
         boule.speed=2;
         boule.applyGravity = true;
         boule.material = new BABYLON.StandardMaterial("s-mat", this.scene);
-        boule.material.diffuseTexture = new BABYLON.Texture("images/lightning.jpg", this.scene);
-        boule.material.emissiveColor = new BABYLON.Color3.Red;
-        boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-        boule.material.diffuseTexture.uScale *= 4;
-        var shadowGenerator = new BABYLON.ShadowGenerator(1024, this.light);
-        shadowGenerator.addShadowCaster(boule);
-        shadowGenerator.useExponentialShadowMap = true;
-        var shadowGenerator2 = new BABYLON.ShadowGenerator(1024, this.light);
-        shadowGenerator2.addShadowCaster(boule);
-        shadowGenerator2.usePoissonSampling = true;
-        shadowGenerator.getShadowMap().renderList.push(boule);
+        boule.material.diffuseTexture = new BABYLON.Texture("images/earth.jpg", this.scene);
+        boule.material.emissiveColor = new BABYLON.Color3.White;
+        /*boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+        boule.material.diffuseTexture.uScale *= 4;*/
+
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
             mass: 2,
@@ -148,12 +142,10 @@ export default class Main {
 
                 }
                 if (this.inputStates.p){
-
                     if(this.cameraToMove) {
                         this.cameraToMove.move();
                     }
                     else {
-                        console.log(this.middle)
                         this.createMoveCamera(this.middle);
                     }
                     this.scene.activeCamera=this.cameraToMove;

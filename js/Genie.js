@@ -1,4 +1,5 @@
 export default class Genie{
+
     constructor(main) {
         this.main=main;
         this.scene = main.scene;
@@ -16,7 +17,7 @@ export default class Genie{
         var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "");
         var obj = this;
         button1.onPointerUpObservable.add(function () {
-            obj.createPanneau();
+            obj.createPanneauForGenie();
         });
         advancedTexture.addControl(button1);
         let torus = BABYLON.MeshBuilder.CreateTorus("torus", {thickness: 0.25, diameter: 3});
@@ -27,9 +28,11 @@ export default class Genie{
 
         this.main.allObstacles[this.main.ind++] = boule;
         this.main.allObstacles[this.main.ind++] = torus;
+        this.boule = boule;
     }
 
-    createPanneau(){
+    createPanneauForGenie(){
+        this.panneau=true;
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         this.main.nbrJetonToGenerate = 5;
         var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Life");
