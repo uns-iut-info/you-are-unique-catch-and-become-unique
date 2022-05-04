@@ -52,6 +52,19 @@ export default class Main {
         this.lightForMove = new BABYLON.PointLight("light", new BABYLON.Vector3(middle, 70, 0), this.scene);
         this.lightForMove.intensity=0.5;
         this.cameraToMove.radius=this.radius;
+        this.cameraToMove.turn = () =>{
+            if(this.cameraToMove.alpha<3.14){
+                this.cameraToMove.move();
+                return false;
+            }
+            this.scene.activeCamera=this.camera;
+            this.cameraToMove.dispose();
+            this.lightForMove.dispose();
+            this.turn=false;
+            this.canMove=true;
+            return true;
+        }
+
     }
 
     createGround(scene, x, y, z, id) {
@@ -289,10 +302,8 @@ export default class Main {
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
             this.boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
-            console.log(this.life,this.nbrLife);
             this.life[this.nbrLife].dispose();
             this.nbrLife-=1;
-            console.log(this.life,this.nbrLife);
             if(this.nbrLife===0){
                 var gameover = new BABYLON.Sound("gameover", "sounds/game_over.wav", this.scene, null, {loop: false, autoplay: true});
                 this.resetGame();

@@ -17,7 +17,6 @@ function startGame() {
     engine = new BABYLON.Engine(canvas, true);
 
     scene = createScene();
-    console.log("ok")
     scene.jetons = [];
     let ground = createGround(scene, 0, -10, 0, 1);
     main = new Main(scene, ground, {x: 0, y: 10, z: 0});
@@ -66,7 +65,7 @@ function createScene() {
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;*/
     var envTexture = new BABYLON.CubeTexture("images/galaxie2/galaxie", scene);
-    let skybox = scene.createDefaultSkybox(envTexture, true, 2000);
+    let skybox = scene.createDefaultSkybox(envTexture, false, 2000);
     skybox.position.y -= 350;
     skybox.position.x -= 250;
 

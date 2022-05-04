@@ -33,4 +33,5 @@ export default class Affichage{
             acc = 50*i;
         }
     }
+
 }
