@@ -22,6 +22,7 @@ export default class Main {
     floorisLava;
     pique=false;
     camera;
+    turn=true;
 
 
     constructor(scene, ground, respawnPoint) {

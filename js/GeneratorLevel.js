@@ -131,7 +131,6 @@ export default class GeneratorLevel {
                         this.pique[i].move("z");
                     }
                 }
-                if(this.main.turn)this.main.cameraToMove.turn()
                 this.manche.move();
                 break;
             }
