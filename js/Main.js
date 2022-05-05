@@ -299,6 +299,7 @@ export default class Main {
 
     events(ground) {
         if (this.boule.intersectsMesh(ground, true) || this.pique ) {
+
             this.pique=false;
             this.boule.position = new BABYLON.Vector3(this.respawn.x, this.respawn.y, this.respawn.z);
             this.boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, 0, 0));
@@ -325,6 +326,7 @@ export default class Main {
                 this.generatorLevel.ascenseur.position.y=this.respawn.y - 5;
                 this.generatorLevel.ascenseur.monte=false;
             }
+            this.generatorLevel.generatorMenu.menuMain((this.level % this.nbrLevel)+1);
 
 
 

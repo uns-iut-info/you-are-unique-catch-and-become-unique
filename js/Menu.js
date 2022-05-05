@@ -16,10 +16,13 @@ export default class Menu{
         button1.cornerRadius = 20;
         button1.background = "rgba(0, 0, 0, 0.5)";
         let obj = this.main;
+        let menu = this;
+
         button1.onPointerUpObservable.add(function() {
-            obj.nbrJetonToGenerate = 0;
+            obj.nbrJetonToGenerate = menu.welcome ? 0 : obj.nbrJetonToGenerate;
             advancedTexture.dispose();
-            obj.canMove = true;
+            obj.canMove = menu.welcome;
+            obj.turn = true;
         });
         return button1;
     }
@@ -99,24 +102,25 @@ export default class Menu{
         advancedTexture.addControl(zqsdKey);
         advancedTexture.addControl(button1)
     }
-    menuLevel(){
-        this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
+    menuMain(i,img){
+        this.main.canMove = false;
+        this.main.turn=false;
+        this.welcome = i === undefined;
         // GUI
         let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        this.main.nbrJetonToGenerate = 5;
         let myText =  new BABYLON.GUI.TextBlock();
         let button1 = this.genButtonStart(advancedTexture);
         let buttonHlp = this.genButtonHelp(button1,advancedTexture,myText);
 
 
 
-        let rectangle = new BABYLON.GUI.Image("name", "images/background.jpg");
+        let rectangle = img ? new BABYLON.GUI.Image("name",img) : new BABYLON.GUI.Image("name", "images/background.jpg");
         rectangle.width = "45%";
         rectangle.height = "50%";
         rectangle.cornerRadius = 20;
 
 
-        myText.text = "Catch and Become Unique";
+        myText.text = i ? "Level "+i : "Catch and Become Unique";
 
         myText.fontSize = "5%";
         myText.top = "-20%";

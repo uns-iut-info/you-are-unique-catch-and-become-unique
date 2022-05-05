@@ -29,6 +29,7 @@ export default class Genie{
         this.main.allObstacles[this.main.ind++] = boule;
         this.main.allObstacles[this.main.ind++] = torus;
         this.boule = boule;
+        this.main.boss=boule;
     }
 
     createPanneauForGenie(){

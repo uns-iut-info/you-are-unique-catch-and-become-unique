@@ -33,7 +33,8 @@ export default class GeneratorLevel {
             case -1: {
                 if (this.createNewLevel) {
                     this.main.canMove = false;
-                    this.generatorMenu.menuLevel();
+                    this.obstacle.createStep(100, 100, this.main.respawn.x, this.main.respawn.y - 5, this.main.respawn.z,true);
+                    this.generatorMenu.menuMain();
                     this.createNewLevel = false;
                 }
                 break;
@@ -172,6 +173,7 @@ export default class GeneratorLevel {
     }
 
     initialisation() {
+        this.generatorMenu.menuMain((this.main.level % this.main.nbrLevel)+1)
         this.main.collision();
         this.createNewLevel = false;
         if (this.main.affichage) this.main.affichage.dispose();

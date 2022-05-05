@@ -81,7 +81,9 @@ export default class Boss{
     }
 
     attaque(b1,b2) {
-        this.attaqueX(b1,b2);
-        this.attaqueZ(b1,b2);
+        if (this.main.canMove) {
+            this.attaqueX(b1, b2);
+            this.attaqueZ(b1, b2);
+        }
     }
 }
