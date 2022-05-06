@@ -17,21 +17,50 @@ export default class Affichage{
     printLife() {
         var acc=0;
         if(this.main.life.length>0) {
+            this.advancedTexture.dispose();
             for (let i = 1; i < this.main.nbrLife; i++) {
                 this.main.life[i].dispose();
             }
         }
+
         for (let i = 1; i < this.main.nbrLife+1; i++) {
-            var image = new BABYLON.GUI.Image("but_"+i, "images/ball.jpg");
+            var image = new BABYLON.GUI.Image("but_"+i, "images/ball_earth.jpg");
             image.height = "50px";
             image.width = "50px";
+            image.top = 5;
             image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
             image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            image.left = `${acc} px`;
+            image.left = `${acc+3} px`;
             this.main.life[i] = image;
-            this.main.scene.advancedTexture.addControl(image);
+            //this.main.scene.advancedTexture.addControl(image);
             acc = 50*i;
         }
+
+
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+
+        var rect1 = new BABYLON.GUI.Rectangle();
+        rect1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        rect1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        rect1.height = "55px";
+        rect1.width=`${acc+10}px`;
+        rect1.left = "5px";
+        rect1.cornerRadius = 20;
+        rect1.top = -320;
+        rect1.color = "blue";
+        rect1.thickness = 1;
+        rect1.background = "grey";
+        for (let i = 0; i < this.main.life.length; i++) {
+            rect1.addControl(this.main.life[i])
+        }
+        advancedTexture.addControl(rect1);
+        this.advancedTexture=advancedTexture;
+
+
+
+
+
     }
 
 }

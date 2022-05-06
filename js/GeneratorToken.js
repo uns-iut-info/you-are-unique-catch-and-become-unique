@@ -40,10 +40,10 @@ export default class GeneratorToken{
         boule.applyGravity = true;
         boule.position = new BABYLON.Vector3(x, y, z);
         boule.material = new BABYLON.StandardMaterial("life-material", this.scene);
-        boule.material.diffuseTexture = new BABYLON.Texture("images/lightning.jpg", this.scene);
-        boule.material.emissiveColor = new BABYLON.Color3.Red;
-        boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-        boule.material.diffuseTexture.uScale *= 4;
+        boule.material.diffuseTexture = new BABYLON.Texture("images/earth.jpg", this.scene);
+        boule.material.specularColor = new BABYLON.Color3(1, 1, 1);
+        var hl = new BABYLON.HighlightLayer("hl1", this.scene);
+        hl.addMesh(boule, BABYLON.Color3.Green());
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
             mass: 0,
             restitution: 0,
@@ -66,6 +66,7 @@ export default class GeneratorToken{
 
             }));
         this.main.allObstacles[this.main.ind++]=boule;
+        return boule;
 
     }
 }
