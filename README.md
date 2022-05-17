@@ -1,7 +1,6 @@
 # Catch-and-become-unique
 [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
 
-Rendu 15/05/2022
 
 **Game Play**
 ---
