@@ -39,6 +39,10 @@ Au fur et à mesure des niveaux suivez l'hitoire du voyage de la terre en cliqua
 -  Le plus gros soucis que nous avons rencontré est le saut de la boule. Le soucis n'etait pas le saut en lui meme mais de lui rendre un aspect réaliste. Au debut notre boule planait dans les airs. Nous avons (presque) tout essayé, masse démesurée, impulsion de la boule en direction du sol lorsque la boule a atteint une certaine hauteur. Finalement après beaucoup de recherches nous avons trouvés notre problème qui était tout bête... nous n'appliquions pas de physique à la scene donc grace à la fonction enablePhysics nous avons exercé une gravité sur l'axe des y sur la scene.
 -  **Une fois ces 2 problemes resolus nous avons pu avancer dans la création du jeu et prendre beaucoup de plaisir à voir evoluer le jeu.**
 
+**Video de présentation**
+---
+Voici le lien d'une courte video pour vous presenter les principales fonctionnnalités de notre jeu : <a href="https://drive.google.com/file/d/1emW3CN1OTrLaG6QKlMzoODIwpdyJ3Pc9/view?usp=sharing">https://drive.google.com/file/d/1emW3CN1OTrLaG6QKlMzoODIwpdyJ3Pc9/view?usp=sharing</a>
+
 Nous espérons que notre jeu vous plaiera. :)
 
 Marynowicz Michael   
