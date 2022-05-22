@@ -12,6 +12,7 @@ export default class Menu {
     clearHud() {
         this.hud.forEach(element => element.dispose());
         this.hud = [];
+        if (this.advancedTexture) this.advancedTexture = undefined;
     }
 
     createText(text) {
@@ -29,6 +30,7 @@ export default class Menu {
 
 
     genButtonStart(advancedTexture) {
+        this.advancedTexture = advancedTexture;
         let text = this.winOrLoose === true ? "RESTART" : "START GAME";
         let button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", text);
         button1.fontSize = "4%";
@@ -39,25 +41,31 @@ export default class Menu {
         button1.color = "white";
         button1.cornerRadius = 20;
         button1.background = "rgba(0, 0, 0, 0.5)";
-        let obj = this.main;
         let menu = this;
         this.hud.push(button1);
         button1.onPointerUpObservable.add(function () {
-            menu.soundClic();
-            obj.nbrJetonToGenerate = (menu.welcome || menu.winOrLoose) ? 0 : obj.nbrJetonToGenerate;
-            if (menu.welcome && menu.winOrLoose === false) obj.initialisation();
-            menu.hud.push(menu.rectangle);
-            if (obj.hasNeverTurn && !menu.helper && menu.winOrLoose === false) obj.skip = obj.generatorLevel.generatorMenu.genTextSkip();
-            menu.clearHud();
-            advancedTexture.dispose();
-            if(obj.hasNeverTurn===false && (obj.level % obj.nbrLevel) === 11) {
-                var fight = new BABYLON.Sound("fight", "sounds/fight.wav", this.scene, null, {loop: false, autoplay: true});
-                obj.printer.printFight();
-            }
-            obj.canMove = !obj.hasNeverTurn || menu.helper;
-            obj.turn = obj.hasNeverTurn && !menu.helper;
+            menu.pressStartButton(advancedTexture);
         });
         return button1;
+    }
+
+    pressStartButton(advancedTexture) {
+        this.soundClic();
+        this.main.nbrJetonToGenerate = (this.welcome || this.winOrLoose) ? 0 : this.main.nbrJetonToGenerate;
+        if (this.welcome && this.winOrLoose === false) this.main.initialisation();
+        this.hud.push(this.rectangle);
+        if (this.main.hasNeverTurn && !this.helper && this.winOrLoose === false) this.main.skip = this.main.generatorLevel.generatorMenu.genTextSkip();
+        this.clearHud();
+        advancedTexture.dispose();
+        if (this.main.hasNeverTurn === false && (this.main.level % this.main.nbrLevel) === 11) {
+            var fight = new BABYLON.Sound("fight", "sounds/fight.wav", this.main.scene, null, {
+                loop: false,
+                autoplay: true
+            });
+            this.main.printer.printFight();
+        }
+        this.main.canMove = !this.main.hasNeverTurn || this.helper;
+        this.main.turn = this.main.hasNeverTurn && !this.helper;
     }
 
     genButtonHelp(btnStart, advancedTexture, myText) {
@@ -259,13 +267,11 @@ export default class Menu {
 
         let obj = this;
         let main = this.main;
-
         button1.onPointerUpObservable.add(function () {
             if (main.canMove) {
                 obj.soundClic();
                 if (main.cameraToMove) main.resetCamera();
-                obj.menuMain(obj.level, img, true);
-
+                obj.menuMain(obj.level, img, true)
             }
         });
         advancedTexture.addControl(button1);
@@ -347,7 +353,145 @@ export default class Menu {
         }
     }
 
-    soundClic(){
+    genPushBonus() {
+        this.pushBonus=true
+        let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        let rectangle = new BABYLON.GUI.Image("name", "images/welcome.jpg");
+        rectangle.width = "45%";
+        rectangle.height = "50%";
+        rectangle.alpha = 0.8;
+        let myText = new BABYLON.GUI.TextBlock();
+        myText.text = "Congratulations you just unlocked the bonus Punch !\n " +
+            "With this level you'll push the boss in the last level more easily\n" +
+            "To use the bonus follow the following tutorial : \n" +
+            "\r  - You must press at the same time :\n ";
+        myText.outlineColor = "black";
+        myText.outlineWidth = 4;
+        myText.fontSize = "2.9%";
+        myText.top = "-15%";
+        myText.color = "white";
+        myText.fontWeight = "bold";
+
+        let pressEnter = new BABYLON.GUI.TextBlock();
+        pressEnter.text = "Press enter to close"
+        pressEnter.outlineColor = "black";
+        pressEnter.outlineWidth = 4;
+        pressEnter.fontSize = "2%";
+        pressEnter.top = "19%";
+        pressEnter.color = "white";
+        pressEnter.fontWeight = "bold";
+
+
+        let or = this.createText("or");
+        or.top = "-1%";
+
+        let plus = this.createText("+");
+        plus.top = "5%";
+
+
+        let zqsdKey = new BABYLON.GUI.Image("zqsd", "images/zqsd.png");
+        zqsdKey.width = "10%";
+        zqsdKey.height = "10%";
+        zqsdKey.top = "-2%";
+        zqsdKey.left = "-7%";
+
+        let fleche = new BABYLON.GUI.Image("fleche", "images/fleche.png");
+        fleche.width = "10%";
+        fleche.height = "10%";
+        fleche.top = "-2%";
+        fleche.left = "7%";
+
+        let letter_b = new BABYLON.GUI.Image("space", "images/swift.png");
+        letter_b.width = "8%";
+        letter_b.height = "7%";
+        //letter_b.left = "0.5%";
+        letter_b.top = "12%";
+
+
+        this.hud.push(pressEnter,myText,rectangle, letter_b, fleche, zqsdKey, or);
+        //this.buttonReturn(myText)
+        advancedTexture.addControl(rectangle);
+        advancedTexture.addControl(myText);
+        advancedTexture.addControl(pressEnter);
+        advancedTexture.addControl(or);
+        advancedTexture.addControl(letter_b);
+        advancedTexture.addControl(zqsdKey);
+        advancedTexture.addControl(fleche);
+        advancedTexture.addControl(plus);
+
+        this.pushMenu = () => {
+            this.pushBonus=false;
+            this.main.nbrJetonToGenerate = 0;
+            this.main.canMove=true;
+            this.clearHud();
+        }
+
+
+    }
+
+    progressBarPush(){
+        var UI;
+        UI = {};
+        UI.adv = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI();
+
+        UI.progressBar = new BABYLON.GUI.Rectangle();
+        UI.progressBar.width = "9%";
+        UI.progressBar.height = "3%";
+        UI.progressBar.verticalAlignment = 1;
+        UI.progressBar.top = "-4.2%";
+        UI.progressBar.left = "-40%";
+        UI.progressBar.isVisible = false;
+        UI.progressBar.background = "black";
+        UI.adv.addControl( UI.progressBar );
+
+        UI.progressBarInner = new BABYLON.GUI.Rectangle();
+        UI.progressBarInner.width = 0;
+        UI.progressBarInner.height = "100%"; // progressBar.height - (progressBar.thickness *2 )
+        UI.progressBarInner.thickness = 0;
+        UI.progressBarInner.horizontalAlignment = 0;
+        UI.progressBarInner.isVisible = true;
+        UI.progressBarInner.background = "green";
+        UI.progressBar.addControl( UI.progressBarInner );
+        let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        let push = new BABYLON.GUI.TextBlock();
+        push.text = "Punch";
+        push.outlineColor = "black";
+        push.outlineWidth = 4;
+        push.fontSize = "3%";
+        push.top = "44%";
+        push.left = "-47%";
+        push.color = "white";
+        push.fontWeight = "bold";
+
+        advancedTexture.addControl(push)
+        this.hud.push(push,UI.progressBar)
+        UI.setProgress = function(progress = 0) {
+            UI.progressBarInner.width = progress/120;
+        };
+
+        UI.showProgressBar = function(progress) {
+            if(progress) { UI.setProgress(progress) }
+            UI.progressBar.isVisible = true;
+        };
+
+        UI.hideProgressBar = function() {
+            UI.progressBar.isVisible = false;
+        };
+        var beta = 0;
+        this.main.scene.registerBeforeRender(() => {
+            if(!UI.progressBar.isVisible){
+                UI.showProgressBar(beta);
+            }
+            else {
+                UI.setProgress(beta)
+            }
+            if(beta===120)this.main.canPush=true
+
+            beta++
+        })
+    }
+
+    soundClic() {
         var clic = new BABYLON.Sound("clic", "sounds/clic.wav", this.main.scene, null, {loop: false, autoplay: true});
 
     }

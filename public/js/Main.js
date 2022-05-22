@@ -10,6 +10,7 @@ export default class Main {
     ind = 0;
     allObstacles = [];
     jump = true;
+    canPush=false;
     impulseDown = false;
     level = 0;
     nbrLevel = 12;
@@ -104,14 +105,33 @@ export default class Main {
     }
 
     castRay(myMesh) {
+        this.oneTime=true;
         var ray = new BABYLON.Ray(myMesh.position, new BABYLON.Vector3(0, -1, 0), 4);
         let hit = this.scene.pickWithRay(ray, (mesh) => {
             return (mesh !== myMesh);
         });
+        if(hit.pickedMesh) {
+            myMesh.actionManager = new BABYLON.ActionManager(this.scene);
+            myMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,
+                    parameter: hit.pickedMesh
+                },
+                () => {
+                    this.jump = true;
 
-        if (hit.pickedMesh && hit.hit && hit.pickedMesh.name !== "boss") {
-            this.jump = true;
-            this.impulseDown = true;
+
+                }));
+            myMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+                {
+                    trigger: BABYLON.ActionManager.OnIntersectionExitTrigger,
+                    parameter: hit.pickedMesh
+                },
+                () => {
+                    this.jump = false;
+
+
+                }));
         }
     }
 
@@ -130,8 +150,6 @@ export default class Main {
         boule.material = new BABYLON.StandardMaterial("s-mat", this.scene);
         boule.material.diffuseTexture = new BABYLON.Texture("images/earth.jpg", this.scene);
         boule.material.emissiveColor = new BABYLON.Color3.White;
-        /*boule.material.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-        boule.material.diffuseTexture.uScale *= 4;*/
 
 
         boule.physicsImpostor = new BABYLON.PhysicsImpostor(boule, BABYLON.PhysicsImpostor.SphereImpostor, {
@@ -148,29 +166,33 @@ export default class Main {
             let velocityLin = boule.physicsImpostor.getLinearVelocity();
             let angularVel = boule.physicsImpostor.getAngularVelocity();
             if (this.canMove) {
-
                 if (velocityLin.y < -1 && this.impulseDown) {
                     this.impulseDown = false;
                 }
                 if (this.inputStates.up && velocityLin.x < 30) {
+                    if (this.inputStates.swift && this.canPush===true) this.punch();
                     boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z - this.boule.speed + this.boule.speed / 1.5, 0));
                     boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x + this.boule.speed, velocityLin.y, velocityLin.z));
 
                 }
                 if (this.inputStates.down && velocityLin.x > -30) {
+                    if (this.inputStates.swift && this.canPush===true) this.punch()
                     boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0, 0, angularVel.z + this.boule.speed - this.boule.speed / 1.5, 0));
                     boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x - this.boule.speed, velocityLin.y, velocityLin.z));
                 }
                 if (this.inputStates.left && velocityLin.z < 30) {
+                    if (this.inputStates.swift && this.canPush===true) this.punch()
                     boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x + this.boule.speed - this.boule.speed / 1.5, 0, 0, 0));
                     boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z + this.boule.speed));
                 }
                 if (this.inputStates.right && velocityLin.z > -30) {
+                    if (this.inputStates.swift && this.canPush===true) this.punch()
                     boule.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(angularVel.x - this.boule.speed + this.boule.speed / 1.5, 0, 0, 0));
                     boule.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(velocityLin.x, velocityLin.y, velocityLin.z - this.boule.speed));
                 }
                 if (this.inputStates.space && this.jump && velocityLin.y < 15) {
                     this.jump = false;
+                    this.oneTime=false;
                     boule.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 100, 0), boule.getAbsolutePosition());
 
                 }
@@ -204,6 +226,9 @@ export default class Main {
         this.inputStates.up = false;
         this.inputStates.down = false;
         this.inputStates.space = false;
+        this.inputStates.p = false;
+        this.inputStates.b = false;
+        this.inputStates.swift = false;
         //add the listener to the main, window object, and update the states
         window.addEventListener('keydown', (event) => {
             if ((event.key === "ArrowLeft") || (event.key === "q") || (event.key === "Q")) {
@@ -228,6 +253,12 @@ export default class Main {
                     this.canMove=true;
                     this.resetCamera();
                 }
+                if(this.generatorMenu.advancedTexture)this.generatorMenu.pressStartButton(this.generatorMenu.advancedTexture)
+
+                if(this.generatorMenu.pushBonus===true)this.generatorMenu.pushMenu();
+            }
+            else if (event.keyCode === 16 && (this.level % this.nbrLevel) === 11) {
+                this.inputStates.swift = true;
             }
 
         }, false);
@@ -249,9 +280,75 @@ export default class Main {
                     this.resetCamera();
                 }
                 this.inputStates.p = false;
+            } else if (event.keyCode === 16) {
+                this.boule.speed = 2;
+                this.inputStates.swift = false;
             }
         }, false);
     }
+
+    punch(){
+        this.boule.speed=120;
+        this.canPush=false;
+        var nitro = new BABYLON.Sound("music_fond", "sounds/nitro.mp3", this.scene, null, {
+            loop: false,
+            autoplay: true
+        });
+        this.generatorMenu.progressBarPush();
+
+        // PARTICULES
+        var particleSystem = new BABYLON.ParticleSystem("particles", 20000, this.scene);
+
+        //Texture of each particle
+        particleSystem.particleTexture = new BABYLON.Texture("/textures/flare.png", this.scene);
+
+        // Where the particles come from
+        particleSystem.emitter = this.boule; // the starting object, the emitter
+        particleSystem.minEmitBox = new BABYLON.Vector3(-1, 0, -1); // Starting all from
+        particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 1); // To...
+
+        // Colors of all particles
+        particleSystem.color1 = new BABYLON.Color4(0, 0.8, 1.0, 1.0);
+        particleSystem.color2 = new BABYLON.Color4(0, 1, 0, 1.0);
+        particleSystem.colorDead = new BABYLON.Color4(0, 1.0, 0, 1.0);
+
+        // Size of each particle (random between...
+        particleSystem.minSize = 0.5;
+        particleSystem.maxSize = 0.9;
+
+        // Life time of each particle (random between...
+        particleSystem.minLifeTime = 0.3;
+        particleSystem.maxLifeTime = 0.5;
+
+        // Emission rate
+        particleSystem.emitRate = 20000;
+
+        // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+        particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+        // Set the gravity of all particles
+        particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+        // Direction of each particle after it has been emitted
+        particleSystem.direction1 = new BABYLON.Vector3(5, 0, 0);
+        particleSystem.direction2 = new BABYLON.Vector3(-5, 0, 0);
+
+        // Angular speed, in radians
+        particleSystem.minAngularSpeed = 0;
+        particleSystem.maxAngularSpeed = Math.PI;
+
+        particleSystem.minEmitPower = 1;
+        particleSystem.maxEmitPower = 5;
+        particleSystem.updateSpeed = 0.005;
+        this.particulePush=particleSystem;
+        particleSystem.start();
+        setTimeout(()=>{
+            this.particulePush.stop();
+            this.boule.speed=2;
+        },1000)
+
+    }
+
 
 
     collision() {
@@ -320,7 +417,7 @@ export default class Main {
                             autoplay: true
                         });
                         this.ind_rebond+=1;
-                        music.setVolume(5);
+                        music.setVolume(15);
                     }
 
                 }));
@@ -331,12 +428,13 @@ export default class Main {
 
     events(ground) {
         if (this.boule.intersectsMesh(ground, true) || this.pique) {
+            this.generatorMenu.clearHud();
             this.resetCamera();
             this.hasNeverTurn = false;
             this.pique = false;
             this.resetBoulePosition()
             this.life[this.nbrLife].dispose();
-            if (this.generatorLevel.generatorMenu.winOrLoose===false)this.nbrLife -= 1;
+            if (this.generatorMenu.winOrLoose===false)this.nbrLife -= 1;
             if (this.nbrLife === 0) {
                 var gameover = new BABYLON.Sound("gameover", "sounds/game_over.wav", this.scene, null, {
                     loop: false,
@@ -355,16 +453,16 @@ export default class Main {
                 loop: true,
                 autoplay: true
             });
-            if (this.generatorLevel.generatorMenu.winOrLoose===false){
-                this.generatorLevel.generatorMenu.menuMain(this.level % this.nbrLevel);
+            if (this.level % this.nbrLevel === 4) {
+                this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80, this.scene.getPhysicsEngine().gravity.z));
+                return false;
+            }
+            if (this.generatorMenu.winOrLoose===false){
+                this.generatorMenu.menuMain(this.level % this.nbrLevel);
             }
             if (this.floorisLava || this.level % this.nbrLevel === 11) {// si c'est le niveau floorIsLava on doit regenerer le niveau completement
                 if (this.affichage) this.affichage.dispose();
                 return true;
-            }
-            if (this.level % this.nbrLevel === 4) {
-                this.scene.getPhysicsEngine().setGravity(new BABYLON.Vector3(this.scene.getPhysicsEngine().gravity.x, -80, this.scene.getPhysicsEngine().gravity.z));
-                return false;
             }
             if (this.level % this.nbrLevel === 9) {
                 this.generatorLevel.ascenseur.position.y = this.respawn.y - 5;
@@ -412,6 +510,7 @@ export default class Main {
     setLevel(i){
         this.level=i;
         this.generatorLevel.createNewLevel=true;
+        this.generatorMenu.clearHud();
         this.turn=true;
 
 
@@ -419,8 +518,8 @@ export default class Main {
     winOrLoose(win){
         let title = win===true ? "You Win" : "You Loose";
         let img = win === true ? "images/win.jpg" : "images/loose.jpeg";
-        this.generatorLevel.generatorMenu.menuMain(undefined, img, false, title,true);
         this.setLevel(0);
+        this.generatorMenu.menuMain(undefined, img, false, title,true);
         this.resetGame();
     }
 

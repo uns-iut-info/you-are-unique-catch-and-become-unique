@@ -1,3 +1,5 @@
+import Menu from "./Menu.js";
+
 export default class Genie {
 
     constructor(main) {
@@ -36,6 +38,7 @@ export default class Genie {
     }
 
     createPanneauForGenie() {
+        this.main.canMove=false;
         this.panneau = true;
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         this.main.nbrJetonToGenerate = 5;
@@ -48,7 +51,7 @@ export default class Genie {
         button1.cornerRadius = 20;
         button1.background = "rgba(0, 0, 0, 0.5)";
 
-        var button2 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Speed");
+        var button2 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Punch");
         button2.fontSize = "5%";
         button2.width = "10%";
         button2.height = "10%";
@@ -57,9 +60,11 @@ export default class Genie {
         button2.cornerRadius = 20;
         button2.background = "rgba(0, 0, 0, 0.5)";
         var obj = this.main
+        let menu = this.main.generatorMenu;
 
 
         button1.onPointerUpObservable.add(function () {
+            this.main.canMove=true;
             obj.nbrJetonToGenerate = 0;
             obj.nbrLife += 1;
             obj.printer.printLife();
@@ -68,8 +73,8 @@ export default class Genie {
 
         });
         button2.onPointerUpObservable.add(function () {
-            obj.nbrJetonToGenerate = 0;
-            obj.boule.speed += 2;
+            obj.canPush =true;
+            menu.genPushBonus()
             advancedTexture.dispose();
 
         });
