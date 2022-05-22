@@ -20,6 +20,7 @@ Vous pouvez directement accéder au jeu en cliquant sur <a href="https://catch-a
 ---
 * Au debut de chaque niveau il y a un bouton "help" pour vous rappeler les touches utiles.
 * De plus, vous pouvez mettre le jeu en pause et accèder à nimporte quel bouton en cliquant sur "?" situé en bas a droite de votre écran.
+* Pour ne pas lacher le clavier vous pouvez directement appuyer sur la touche entrer à chaque menu cela sera equivalent à appuyer sur "Start Game"
 
 **Story**
 ---
@@ -42,6 +43,10 @@ Au fur et à mesure des niveaux suivez l'hitoire du voyage de la terre en cliqua
 **Video de présentation**
 ---
 Voici le lien d'une courte video pour vous presenter les principales fonctionnnalités de notre jeu : <a href="https://drive.google.com/file/d/1emW3CN1OTrLaG6QKlMzoODIwpdyJ3Pc9/view?usp=sharing">https://drive.google.com/file/d/1emW3CN1OTrLaG6QKlMzoODIwpdyJ3Pc9/view?usp=sharing</a>
+
+**Video explicative pour le bonus "punch"**
+---
+Voici le lien d'une derniere courte video pour vous expliquer le fonctionnnement du bonus punch que vous pouvez récupérer au niveau 10 : <a href="https://drive.google.com/file/d/1_6FbKjJ7YKwR1W4g8JO1eWnrc6vW_nC4/view?usp=sharing">https://drive.google.com/file/d/1_6FbKjJ7YKwR1W4g8JO1eWnrc6vW_nC4/view?usp=sharing</a>
 
 Nous espérons que notre jeu vous plaiera. :)
 
