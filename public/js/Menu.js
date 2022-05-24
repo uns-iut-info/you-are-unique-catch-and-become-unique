@@ -213,6 +213,7 @@ export default class Menu {
     }
 
     menuMain(i, img, helper = false, title = "Catch and Become Unique", winOrLoose = false) {
+        this.clearHud()
         this.winOrLoose = winOrLoose
         this.helper = helper
         this.main.canMove = false;
@@ -233,7 +234,7 @@ export default class Menu {
         rectangle.width = "45%";
         rectangle.height = "50%";
         rectangle.alpha = 0.8;
-        this.rectangle = rectangle;
+        this.rectangle = rectangle
         myText.text = i ? "Level " + i : title;
         myText.outlineColor = "black";
         myText.outlineWidth = 4;

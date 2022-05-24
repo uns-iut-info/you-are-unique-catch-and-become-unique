@@ -72,6 +72,7 @@ export default class Boss {
                         loop: false,
                         autoplay: true
                     });
+                    win.setVolume(5)
                 }
                 this.win = true;
 

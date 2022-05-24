@@ -192,7 +192,7 @@ export default class Obstacles {
 
     createInvisibleHouse(x, y, z) {
         let cote1 = this.createStep(20, 20, x + 10, y + 10, z, false);
-        let coteB = this.createStep(10, 20, x - 10, y + 5, z, false);
+        let coteB = this.createStep(7, 20, x - 10, y + 5, z, false);
         let cote2 = this.createStep(22, 20, x, y + 10, z - 10, false);
         let cote3 = this.createStep(22, 20, x, y + 10, z + 10, false);
         let toit = this.createStep(22, 22, x, y + 20, z, false);
@@ -298,7 +298,6 @@ export default class Obstacles {
     panneau(message) {
         this.main.canMove = false;
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        this.main.nbrJetonToGenerate = 5;
         var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", message);
         button1.fontSize = "4%";
         button1.width = "30%";
@@ -314,6 +313,7 @@ export default class Obstacles {
             obj.canMove = true;
             advancedTexture.dispose();
         });
+        this.main.generatorMenu.hud.push(button1)
         advancedTexture.addControl(button1);
 
     }
@@ -561,7 +561,7 @@ export default class Obstacles {
         let ascenseur = this.createStep(20, 20, x, y, z, true, "images/lift.jpeg");
         let life = this.generatorToken.createLife(x, y + 5, z);
         ascenseur.addChild(life);
-        if (!this.main.boule.actionManager) ascenseur.actionManager = new BABYLON.ActionManager(this.scene);
+        if (!ascenseur.actionManager) ascenseur.actionManager = new BABYLON.ActionManager(this.scene);
         ascenseur.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             {
                 trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger,

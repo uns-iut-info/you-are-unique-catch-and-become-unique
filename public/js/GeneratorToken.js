@@ -56,7 +56,7 @@ export default class GeneratorToken{
                 parameter: this.main.boule
             },
             () => {
-                if (this.main.nbrLife===1)this.main.music.stop();
+                if (this.main.nbrLife===1)this.main.music_oneLife.stop();
                 this.main.nbrLife+=1;
                 this.main.printer.printLife();
                 boule.physicsImpostor.dispose();
