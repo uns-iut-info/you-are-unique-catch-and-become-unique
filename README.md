@@ -48,6 +48,11 @@ Voici le lien d'une courte video pour vous presenter les principales fonctionnna
 ---
 Voici le lien d'une derniere courte video pour vous expliquer le fonctionnnement du bonus punch que vous pouvez récupérer au niveau 10 : <a href="https://drive.google.com/file/d/1_6FbKjJ7YKwR1W4g8JO1eWnrc6vW_nC4/view?usp=sharing">https://drive.google.com/file/d/1_6FbKjJ7YKwR1W4g8JO1eWnrc6vW_nC4/view?usp=sharing</a>
 
+**Annecdote**
+---
+Le son du saut a été conçu par un ami à nous qui est musicien. En tout, il y a 4 sons differents qui sont joués un par un, à chaque saut.
+
+
 Nous espérons que notre jeu vous plaiera. :)
 
 Marynowicz Michael   
