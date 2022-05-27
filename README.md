@@ -16,6 +16,34 @@ Vous pouvez directement accéder au jeu en cliquant sur <a href="https://catch-a
 - ' ' = sauter. 
 - 'p' = pour avoir une vue d'ensemble du niveau
 
+#### le nombre de vies restantes
+---
+<img width="173" alt="Capture d’écran 2022-05-27 à 09 00 30" src="https://user-images.githubusercontent.com/79304440/170649502-296173f4-f7d0-43b7-a8d4-4b803ce92900.png">
+
+#### le nombre de jetons restants a prendre pour finir le niveau
+---
+<img width="137" alt="Capture d’écran 2022-05-27 à 09 00 41" src="https://user-images.githubusercontent.com/79304440/170649829-67eba81b-2b91-4fef-83e1-e5628c08cecc.png">
+
+
+#### Bouton pour mettre en pause le jeu
+---
+<img width="66" alt="Capture d’écran 2022-05-27 à 09 01 03" src="https://user-images.githubusercontent.com/79304440/170649848-749f2e5a-b62b-4e5d-96cd-b9cc882cacf1.png">
+
+
+#### Les jetons à recuperer 
+---
+<img width="66" alt="Capture d’écran 2022-05-27 à 09 02 03" src="https://user-images.githubusercontent.com/79304440/170649882-2f1f9d8f-eb0d-4ca2-b5a8-7b2e1ca5a499.png">
+
+
+#### Les vies à récupérer
+---
+<img width="71" alt="Capture d’écran 2022-05-27 à 09 02 46" src="https://user-images.githubusercontent.com/79304440/170649958-1d15b8e5-91c9-4d87-978b-db3958f3556f.png">
+
+#### Le boss de fin
+---
+<img width="115" alt="Capture d’écran 2022-05-27 à 09 04 27" src="https://user-images.githubusercontent.com/79304440/170649906-6f53b722-8295-497a-b92e-1594c4f3d3ae.png">
+
+
 **Aides**
 ---
 * Au debut de chaque niveau il y a un bouton "help" pour vous rappeler les touches utiles.
