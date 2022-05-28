@@ -61,11 +61,13 @@ Au fur et à mesure des niveaux suivez l'hitoire du voyage de la terre en cliqua
 - Plus d'effets sonores.
 - Plus de reliefs dans les niveaux.
 - Pour le niveau final nous avons l'idée de creer un pacman en 3D qui sera la derniere étape afin que la boule puisse rejoindre la nouvelle galaxie. Et les adversaires seront differentes planetes qui empecheront la boule dans sa progression.
+- **Ameliorer les performances de notre jeu, c'est à dire moins de lag et moins de temps de chargement entre les niveaux.**
 
 **Difficultés rencontrées**
 ---
 - Le debut de la conception du jeu fut fastidieuse. En effet, dés le debut nous avons cherché à "simplement" créer une boule qui se deplace sur une terrain plat et une followCamera. La followCamera avait un comportement que nous ne comprenions pas. Lorsque nous nous deplacions sur les cotés cela changeait l'axe de la camera et la faisait tourner dans tout les sens. Pour resoudre ce probleme nous avons choisi l'ArcRotateCamera.
 -  Le plus gros soucis que nous avons rencontré est le saut de la boule. Le soucis n'etait pas le saut en lui meme mais de lui rendre un aspect réaliste. Au debut notre boule planait dans les airs. Nous avons (presque) tout essayé, masse démesurée, impulsion de la boule en direction du sol lorsque la boule a atteint une certaine hauteur. Finalement après beaucoup de recherches nous avons trouvés notre problème qui était tout bête... nous n'appliquions pas de physique à la scene donc grace à la fonction enablePhysics nous avons exercé une gravité sur l'axe des y sur la scene.
+-  Un point faible dans notre jeu est le fait que par moment le chargement du prochain niveau met quelques secondes à arriver. Par exemple vous prenez le dernier jeton d'un niveau il se peut que cela mette quelques secondes avant de charger le menu suivant ainsi que le prochain niveau or cela se produit rarement et depend de l'ordinateur sur lequel vous testez le jeu.
 -  **Une fois ces 2 problemes resolus nous avons pu avancer dans la création du jeu et prendre beaucoup de plaisir à voir evoluer le jeu.**
 
 **Video de présentation**
