@@ -72,11 +72,15 @@ Au fur et à mesure des niveaux suivez l'hitoire du voyage de la terre en cliqua
 
 **Video de présentation**
 ---
-Voici le lien d'une courte video pour vous presenter les principales fonctionnnalités de notre jeu : <a href="https://drive.google.com/file/d/1emW3CN1OTrLaG6QKlMzoODIwpdyJ3Pc9/view?usp=sharing">https://drive.google.com/file/d/1emW3CN1OTrLaG6QKlMzoODIwpdyJ3Pc9/view?usp=sharing</a>
+Voici le lien d'une courte video pour vous presenter les principales fonctionnnalités de notre jeu : 
+
+[![Watch the video](https://user-images.githubusercontent.com/79304440/171142420-04269344-48a2-47f7-803c-cb1a2bb80a1a.png)](https://youtu.be/f2Y4p5jHhW4)
 
 **Video explicative pour le bonus "punch"**
 ---
-Voici le lien d'une derniere courte video pour vous expliquer le fonctionnnement du bonus punch que vous pouvez récupérer au niveau 10 : <a href="https://drive.google.com/file/d/1_6FbKjJ7YKwR1W4g8JO1eWnrc6vW_nC4/view?usp=sharing">https://drive.google.com/file/d/1_6FbKjJ7YKwR1W4g8JO1eWnrc6vW_nC4/view?usp=sharing</a>
+Voici le lien d'une derniere courte video pour vous expliquer le fonctionnnement du bonus punch que vous pouvez récupérer au niveau 10 : 
+
+[![Watch the video](https://user-images.githubusercontent.com/79304440/171153204-43dff6f7-85ba-4c75-ab0e-74391de07ee9.png)](https://youtu.be/CFs4h-C-GCc)
 
 **Annecdote**
 ---
